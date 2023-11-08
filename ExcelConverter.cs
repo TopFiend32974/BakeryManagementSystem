@@ -747,7 +747,7 @@ namespace Delete_Push_Pull
         {
 
             // Set narrower margins
-            worksheet.PrinterSettings.LeftMargin = 0m;  // Adjust the margin values as needed
+            worksheet.PrinterSettings.LeftMargin = 0m;  
             worksheet.PrinterSettings.RightMargin = 0m;
             worksheet.PrinterSettings.TopMargin = 0m;
             worksheet.PrinterSettings.BottomMargin = 0m;

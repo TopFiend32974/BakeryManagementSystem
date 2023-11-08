@@ -1,6 +1,7 @@
 ﻿using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -198,6 +199,7 @@ namespace Delete_Push_Pull
 
                 using (var package = new ExcelPackage())
                 {
+                    
                     var worksheet = package.Workbook.Worksheets.Add("PastyHelper");
 
                     var ordersByDay = Data.GetInstance().GetOrders(selectedDay);
@@ -366,15 +368,38 @@ namespace Delete_Push_Pull
                         worksheet.Cells[row, 3].Value = totalOtherQuantity;
                         string totalLargeCutResult = productionHelper.CutRounder(totalLargeCutQuantity);
                         worksheet.Cells[row, 4].Value = totalLargeCutResult;
-                        row++;
+                        row++;                       
 
-
-                        worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns(0);
                         //fontsize 22
                         //enable gridlines 
                         //enable header lines
                     }
-                    
+
+
+                    string cellRange = "A1:G90"; // Change this to the range you need
+
+                    // Set the font size for the specified cell range
+                    using (var cells = worksheet.Cells[cellRange])
+                    {
+                        cells.Style.Font.Size = 22; // Change the font size as needed (in points)
+                        worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns(0);
+
+                    }
+
+                    worksheet.PrinterSettings.LeftMargin = 0m;
+                    worksheet.PrinterSettings.RightMargin = 0m;
+                    worksheet.PrinterSettings.TopMargin = 0m;
+                    worksheet.PrinterSettings.BottomMargin = 0m;
+
+                    worksheet.PrinterSettings.ShowGridLines = true;
+
+                    worksheet.PrinterSettings.FitToPage = true;
+                    worksheet.PrinterSettings.FitToWidth = 1;
+
+
+
+
+
                     package.SaveAs(new FileInfo(outputFilePath));
                 }
 
