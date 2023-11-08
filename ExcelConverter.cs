@@ -1,4 +1,5 @@
 ﻿using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,8 +36,8 @@ namespace Delete_Push_Pull
                     if (ordersByDay.Count > 0)
                     {
                         // Create a header row
-                        worksheet.Cells["A1"].Value = "Product ID";
-                        worksheet.Cells["B1"].Value = "Product Name";
+                        worksheet.Cells["A1"].Value = "ID";
+                        worksheet.Cells["B1"].Value = "Prod Name";
 
                         var uniqueCustomers = ordersByDay.SelectMany(o => o.OrderItems.Select(oi => oi.Order.Customer))
                             .Distinct()
@@ -118,10 +119,6 @@ namespace Delete_Push_Pull
         }
 
 
-
-
-
-
         public static bool OutputCustomerOrdersToExcel(DayOfWeek selectedDay, string GenSheets)
         {
 
@@ -201,10 +198,6 @@ namespace Delete_Push_Pull
 
         }
 
-
-
-
-
         // Helper function to convert a number to a column letter (e.g., 1 -> A, 27 -> AA)
         public static string ConvertToLetter(int colNumber)
         {
@@ -226,11 +219,8 @@ namespace Delete_Push_Pull
 
         public static bool GenerateBreadSortedSheet(DayOfWeek selectedDay, string GenSheets)
         {
-
-
             try
             {
-
                 // Specify the output Excel file path
                 string outputFilePath = GenSheets + $@"\MyMatrix_{selectedDay}.xlsx";
 
@@ -245,9 +235,13 @@ namespace Delete_Push_Pull
                     if (ordersByDay.Count > 0)
                     {
                         // Create a header row
-                        worksheet.Cells["A1"].Value = "Product ID";
-                        worksheet.Cells["B1"].Value = "Product Name";
-                        worksheet.Cells["C1"].Value = "Quantity";
+                        worksheet.Cells["A1"].Value = "ID";
+                        worksheet.Cells["B1"].Value = "Prod Name";
+                        worksheet.Cells["C1"].Value = "Total";
+                        worksheet.Cells["D1"].Value = "Bread Sorted";
+                        worksheet.Cells["E1"].Value = "Sort Remaining Bread";
+                        worksheet.Cells["F1"].Value = "Completed?";
+
 
                         var uniqueProducts = new List<(int ProductId, string ProductName)>();
 
@@ -284,15 +278,45 @@ namespace Delete_Push_Pull
                             worksheet.Cells[row, 1].Value = ProductId;
                             worksheet.Cells[row, 2].Value = ProductName;
                             worksheet.Cells[row, 3].Value = quantity;
+
+                            // D1 remains null/0
+                            worksheet.Cells[row, 4].Value = null;
+
+                            // E1 is set as an equation for (C1 - D1)
+                            worksheet.Cells[row, 5].Formula = $"C{row} - D{row}";
+
+                            //// F1 can be set as a checkbox (true/false)
+                            //worksheet.Cells[row, 6].Value = "False"; // Set the cell value to "True"
+                            
+
+
                             row++;
                         }
-                    }
 
+
+                        
+                        // Determine the last row in the column
+                        int lastRow = worksheet.Cells[worksheet.Dimension.Address].End.Row;                       
+
+
+                        // Add a formula to the Completed? column (Assuming "Total" is in column C and "Bread Sorted" is in column D)
+                        worksheet.Cells["F2"].Formula = "IF(C2-D2=0, \"True\", \"False\")";
+
+                        // Apply the formula to the entire column if needed
+                        for (int Trow = 2; Trow <= lastRow; Trow++)
+                        {
+                            worksheet.Cells[Trow, 6].Formula = $"IF(C{Trow}-D{Trow}=0, \"True\", \"False\")";
+                        }
+
+
+
+                    }
+                    //worksheet.Column(5).Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                     worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
                     package.Save();
                 }
 
-                //MessageBox.Show($"Bread Sorted for {selectedDay} exported to {outputFilePath}");
+                // MessageBox.Show($"Bread Sorted for {selectedDay} exported to {outputFilePath}");
 
                 return true; // Method executed successfully
             }
@@ -333,10 +357,20 @@ namespace Delete_Push_Pull
                     if (ordersByDay.Count > 0)
                     {
                         // Create a header row
-                        worksheet.Cells["A1"].Value = "Product ID";
-                        worksheet.Cells["B1"].Value = "Product Name";
+                        worksheet.Cells["A1"].Value = "ID";
+                        worksheet.Cells["B1"].Value = "Prod Name";
 
-                        var uniqueCustomers = ordersByDay.SelectMany(o => o.OrderItems.Select(oi => oi.Order.Customer))
+                        //var uniqueCustomers = ordersByDay.SelectMany(o => o.OrderItems.Select(oi => oi.Order.Customer))
+                        //    .Distinct()
+                        //    .OrderBy(c => c.CustomerID)
+                        //    .ToList();
+
+
+                        // Filter unique customers who have ordered pasties (part bake pasty cocktail products)
+                        var uniqueCustomers = ordersByDay
+                            .SelectMany(o => o.OrderItems
+                                .Where(oi => IsPartBakePastyCocktailProduct(oi.Product.ProductName.ToLower()))
+                                .Select(oi => oi.Order.Customer))
                             .Distinct()
                             .OrderBy(c => c.CustomerID)
                             .ToList();
@@ -365,7 +399,7 @@ namespace Delete_Push_Pull
                         foreach (var product in uniqueProducts)
                         {
                             // Check if the product is part bake, pasty, or cocktail
-                            if (IsPartBakePastyCocktailProduct(product.ProductName))
+                            if (IsPartBakePastyCocktailProduct(product.ProductName.ToLower()))
                             {
                                 worksheet.Cells[row, 1].Value = product.ProductId;
                                 worksheet.Cells[row, 2].Value = product.ProductName;
@@ -444,10 +478,18 @@ namespace Delete_Push_Pull
                     if (ordersByDay.Count > 0)
                     {
                         // Create a header row
-                        worksheet.Cells["A1"].Value = "Product ID";
-                        worksheet.Cells["B1"].Value = "Product Name";
+                        worksheet.Cells["A1"].Value = "ID";
+                        worksheet.Cells["B1"].Value = "Prod Name";
 
-                        var uniqueCustomers = ordersByDay.SelectMany(o => o.OrderItems.Select(oi => oi.Order.Customer))
+                        //var uniqueCustomers = ordersByDay.SelectMany(o => o.OrderItems.Select(oi => oi.Order.Customer))
+                        //    .Distinct()
+                        //    .OrderBy(c => c.CustomerID)
+                        //    .ToList();
+
+                        var uniqueCustomers = ordersByDay
+                            .SelectMany(o => o.OrderItems
+                                .Where(oi => ContainsBreadKeywords(oi.Product.ProductName.ToLower()))
+                                .Select(oi => oi.Order.Customer))
                             .Distinct()
                             .OrderBy(c => c.CustomerID)
                             .ToList();
@@ -527,7 +569,7 @@ namespace Delete_Push_Pull
         // Helper function to check if a product name contains bread-related keywords
         private static bool ContainsBreadKeywords(string productName)
         {
-            string[] keywords = { "large", "slice", "sliced", "doorstep", "bloomer" };
+            string[] keywords = { "large", "slice", "sliced", "doorstep", "bloomer", "lge", "sq" };
             return keywords.Any(keyword => productName.ToLower().Contains(keyword));
         }
 
@@ -551,10 +593,18 @@ namespace Delete_Push_Pull
                     if (ordersByDay.Count > 0)
                     {
                         // Create a header row
-                        worksheet.Cells["A1"].Value = "Product ID";
-                        worksheet.Cells["B1"].Value = "Product Name";
+                        worksheet.Cells["A1"].Value = "ID";
+                        worksheet.Cells["B1"].Value = "Prod Name";
 
-                        var uniqueCustomers = ordersByDay.SelectMany(o => o.OrderItems.Select(oi => oi.Order.Customer))
+                        //var uniqueCustomers = ordersByDay.SelectMany(o => o.OrderItems.Select(oi => oi.Order.Customer))
+                        //    .Distinct()
+                        //    .OrderBy(c => c.CustomerID)
+                        //    .ToList();
+
+                        var uniqueCustomers = ordersByDay
+                            .SelectMany(o => o.OrderItems
+                                .Where(oi => ContainsFrozenKeywords(oi.Product.ProductName.ToLower()))
+                                .Select(oi => oi.Order.Customer))
                             .Distinct()
                             .OrderBy(c => c.CustomerID)
                             .ToList();
@@ -656,10 +706,18 @@ namespace Delete_Push_Pull
                     if (ordersByDay.Count > 0)
                     {
                         // Create a header row
-                        worksheet.Cells["A1"].Value = "Product ID";
-                        worksheet.Cells["B1"].Value = "Product Name";
+                        worksheet.Cells["A1"].Value = "ID";
+                        worksheet.Cells["B1"].Value = "Prod Name";
 
-                        var uniqueCustomers = ordersByDay.SelectMany(o => o.OrderItems.Select(oi => oi.Order.Customer))
+                        //var uniqueCustomers = ordersByDay.SelectMany(o => o.OrderItems.Select(oi => oi.Order.Customer))
+                        //    .Distinct()
+                        //    .OrderBy(c => c.CustomerID)
+                        //    .ToList();
+
+                        var uniqueCustomers = ordersByDay
+                            .SelectMany(o => o.OrderItems
+                                .Where(oi => ContainsBapKeywords(oi.Product.ProductName.ToLower()))
+                                .Select(oi => oi.Order.Customer))
                             .Distinct()
                             .OrderBy(c => c.CustomerID)
                             .ToList();

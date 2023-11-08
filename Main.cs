@@ -82,7 +82,7 @@ namespace Delete_Push_Pull
             string GenSheetsDir = (string)Settings.Default["GenSheets"];
             string LocalLabelsDir = (string)Settings.Default["DeleteDir"];
 
-
+            DeliveryRoutes.Delivery(PushtoCloud);
             ProductionHelp.ProductionHelperMain(selectedDay, GenSheetsDir);
             //DataValidation.CheckCSV(GenSheetsDir);
 
@@ -151,43 +151,5 @@ namespace Delete_Push_Pull
 
 
 
-    internal class CSVFiles
-    {
-        public static bool OutputProductsToCSV(string GenSheets)
-        {
-            try
-            {
-
-                List<Product> products = Data.GetInstance().GetProducts();
-
-                if (products.Count == 0)
-                {
-                    MessageBox.Show("No products to export.");
-                    return false;
-                }
-
-                string outputFilePath = GenSheets + @"\Products.csv";
-
-                using (StreamWriter writer = new StreamWriter(outputFilePath))
-                {
-                    writer.WriteLine("ProductId,ProductName,ProductClass,MarkupClass,BatchSize,ProductType,PackSize,SourceProductId");
-
-                    foreach (var product in products)
-                    {
-                        string productLine = $"{product.ProductId},{product.ProductName},{product.ProductClass},{product.MarkupClass},{product.BatchSize},{product.ProductType},{product.PackSize},{product.SourceProductId}";
-                        writer.WriteLine(productLine);
-                    }
-
-                    //MessageBox.Show($"{products.Count} Products exported to .CSV");
-                }
-                return true;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                return false;
-            }
-
-        }
-    }
+    
 }
