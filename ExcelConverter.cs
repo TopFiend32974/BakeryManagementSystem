@@ -805,10 +805,10 @@ namespace Delete_Push_Pull
         {
 
             // Set narrower margins
-            worksheet.PrinterSettings.LeftMargin = 0m;  
-            worksheet.PrinterSettings.RightMargin = 0m;
-            worksheet.PrinterSettings.TopMargin = 0m;
-            worksheet.PrinterSettings.BottomMargin = 0m;
+            worksheet.PrinterSettings.LeftMargin = 0.25m;  
+            worksheet.PrinterSettings.RightMargin = 0.25m;
+            worksheet.PrinterSettings.TopMargin = 0.25m;
+            worksheet.PrinterSettings.BottomMargin = 0.25m;
 
             // Show gridlines for printing
             worksheet.PrinterSettings.ShowGridLines = true;
