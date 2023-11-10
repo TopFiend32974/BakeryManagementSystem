@@ -77,12 +77,12 @@ namespace Delete_Push_Pull
 
             //Passes through directories
             string BackupDir = (string)Settings.Default["BackupDir"];
-            string PushtoCloud = (string)Settings.Default["PushDir"];
-            string PulltoLocal = (string)Settings.Default["PullDir"];
+            string PushtoCloud = (string)Settings.Default["Local"];
+            string PulltoLocal = (string)Settings.Default["Cloud"];
             string GenSheetsDir = (string)Settings.Default["GenSheets"];
             string LocalLabelsDir = (string)Settings.Default["DeleteDir"];
 
-            DeliveryRoutes.Delivery(PushtoCloud);
+            //DeliveryRoutes.Delivery(PushtoCloud);
             ProductionHelp.ProductionHelperMain(selectedDay, GenSheetsDir);
             //DataValidation.CheckCSV(GenSheetsDir);
 

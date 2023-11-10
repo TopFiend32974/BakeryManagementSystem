@@ -20,8 +20,8 @@ namespace Delete_Push_Pull
         private void setting_Load_1(object sender, EventArgs e)
         {
             lblShowDir.Text = "Current Dir Selected: " + (string)Settings.Default["DeleteDir"];
-            lblPush.Text = "Current Dir Selected: " + (string)Settings.Default["PushDir"];
-            lblPull.Text = "Current Dir Selected: " + (string)Settings.Default["PullDir"];
+            lblPush.Text = "Current Dir Selected: " + (string)Settings.Default["Local"];
+            lblPull.Text = "Current Dir Selected: " + (string)Settings.Default["Cloud"];
             lblBackup.Text = "Current Dir Selected: " + (string)Settings.Default["BackupDir"];
             lblGenSheets.Text = "Current Dir Selected: " + (string)Settings.Default["GenSheets"];
         }
@@ -50,7 +50,7 @@ namespace Delete_Push_Pull
             FolderBrowserDialog diag = new FolderBrowserDialog();
             if (diag.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                Settings.Default["PushDir"] = diag.SelectedPath.ToString();
+                Settings.Default["Local"] = diag.SelectedPath.ToString();
                 Settings.Default.Save();
 
                 Data dataInstance = Data.GetInstance();
@@ -65,9 +65,9 @@ namespace Delete_Push_Pull
             }
             else
             {
-                Settings.Default["PushDir"] = "";
+                Settings.Default["Local"] = "";
             }
-            lblPush.Text = "Current Dir Selected: " + (string)Settings.Default["PushDir"];
+            lblPush.Text = "Current Dir Selected: " + (string)Settings.Default["Local"];
         }
 
         private void button1_Click_1(object sender, EventArgs e)
@@ -90,14 +90,14 @@ namespace Delete_Push_Pull
             FolderBrowserDialog diag = new FolderBrowserDialog();
             if (diag.ShowDialog() == DialogResult.OK)
             {
-                Settings.Default["PullDir"] = diag.SelectedPath.ToString();
+                Settings.Default["Cloud"] = diag.SelectedPath.ToString();
                 Settings.Default.Save();
             }
             else
             {
-                Settings.Default["PullDir"] = "";
+                Settings.Default["Cloud"] = "";
             }
-            lblPull.Text = "Current Dir Selected: " + (string)Settings.Default["PullDir"];
+            lblPull.Text = "Current Dir Selected: " + (string)Settings.Default["Cloud"];
         }
 
         private void btnSheetGen_Click(object sender, EventArgs e)

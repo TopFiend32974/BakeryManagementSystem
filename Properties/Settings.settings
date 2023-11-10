@@ -5,10 +5,10 @@
     <Setting Name="DeleteDir" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="PushDir" Type="System.String" Scope="User">
+    <Setting Name="Local" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="PullDir" Type="System.String" Scope="User">
+    <Setting Name="Cloud" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="BackupDir" Type="System.String" Scope="User">

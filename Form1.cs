@@ -64,8 +64,8 @@ namespace Delete_Push_Pull
             DateTime tempDate = DateTime.Now;
             string backupName = tempDate.ToString("yy-MM-dd");
 
-            string sourcePath = (string)Settings.Default["PushDir"];
-            string targetPath = (string)Settings.Default["PullDir"];
+            string sourcePath = (string)Settings.Default["Local"];
+            string targetPath = (string)Settings.Default["Cloud"];
             string BackupPath = (string)Settings.Default["BackupDir"];
 
 
@@ -85,7 +85,7 @@ namespace Delete_Push_Pull
                     try
                     {
 
-                        System.IO.DirectoryInfo di = new DirectoryInfo((string)Settings.Default["PullDir"]);
+                        System.IO.DirectoryInfo di = new DirectoryInfo((string)Settings.Default["Cloud"]);
 
                         bool isDir = Directory.Exists(BackupPathNamed);
                         if (!isDir)
@@ -169,8 +169,8 @@ namespace Delete_Push_Pull
         private void btnPull_Click(object sender, EventArgs e)
         {
 
-            string sourcePath = new DirectoryInfo((string)Settings.Default["PullDir"]).GetDirectories().OrderByDescending(d => d.LastWriteTimeUtc).First().ToString();
-            string targetPath = (string)Settings.Default["PushDir"];
+            string sourcePath = new DirectoryInfo((string)Settings.Default["Cloud"]).GetDirectories().OrderByDescending(d => d.LastWriteTimeUtc).First().ToString();
+            string targetPath = (string)Settings.Default["Local"];
 
             DialogResult dialogResult = MessageBox.Show("Are you sure you want to pull from'" + sourcePath + "' ?", "Warning", MessageBoxButtons.YesNo);
             if (dialogResult == DialogResult.Yes)
@@ -178,7 +178,7 @@ namespace Delete_Push_Pull
                 try
                 {
 
-                    System.IO.DirectoryInfo di = new DirectoryInfo((string)Settings.Default["PushDir"]);
+                    System.IO.DirectoryInfo di = new DirectoryInfo((string)Settings.Default["Local"]);
 
                     foreach (FileInfo file in di.GetFiles())
                     {
@@ -215,12 +215,12 @@ namespace Delete_Push_Pull
 
         private void btnOpenPush_Click(object sender, EventArgs e)
         {
-            Process.Start("explorer.exe", (string)Settings.Default["PushDir"]);
+            Process.Start("explorer.exe", (string)Settings.Default["Local"]);
         }
 
         private void btnOpenPull_Click(object sender, EventArgs e)
         {
-            Process.Start("explorer.exe", (string)Settings.Default["PullDir"]);
+            Process.Start("explorer.exe", (string)Settings.Default["Cloud"]);
         }
 
         private void settingsToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -232,7 +232,7 @@ namespace Delete_Push_Pull
         private void recoveryToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string sourcePath = new DirectoryInfo((string)Settings.Default["BackupDir"]).GetDirectories().OrderByDescending(d => d.LastWriteTimeUtc).First().ToString();
-            string targetPath = (string)Settings.Default["PushDir"];
+            string targetPath = (string)Settings.Default["Local"];
 
             DialogResult dialogResult = MessageBox.Show("Are you sure you want to recover from'" + sourcePath + "' ?", "Warning", MessageBoxButtons.YesNo);
             if (dialogResult == DialogResult.Yes)
@@ -240,7 +240,7 @@ namespace Delete_Push_Pull
                 try
                 {
 
-                    System.IO.DirectoryInfo di = new DirectoryInfo((string)Settings.Default["PushDir"]);
+                    System.IO.DirectoryInfo di = new DirectoryInfo((string)Settings.Default["Local"]);
 
                     foreach (FileInfo file in di.GetFiles())
                     {
@@ -277,8 +277,8 @@ namespace Delete_Push_Pull
 
         private void lblGenLabels_Click(object sender, EventArgs e)
         {
-            string batchFilePath = (string)Settings.Default["PushDir"] + @"\genlabels.bat";
-            string batchFileDir = (string)Settings.Default["PushDir"];
+            string batchFilePath = (string)Settings.Default["Local"] + @"\genlabels.bat";
+            string batchFileDir = (string)Settings.Default["Local"];
 
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.FileName = batchFilePath;

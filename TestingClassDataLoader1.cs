@@ -25,7 +25,7 @@ namespace Delete_Push_Pull
 
         public bool LoadAllData()
         {
-            string LocalDir = (string)Settings.Default["PushDir"];
+            string LocalDir = (string)Settings.Default["Local"];
             if (!LoadProducts(LocalDir) || !LoadCustomers(LocalDir) || !LoadOrders(LocalDir))
                 return false;
 
