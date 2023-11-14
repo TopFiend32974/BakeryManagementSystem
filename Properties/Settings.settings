@@ -17,5 +17,8 @@
     <Setting Name="GenSheets" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="ExcelFontSize" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">22</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

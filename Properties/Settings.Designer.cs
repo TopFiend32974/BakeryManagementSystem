@@ -82,5 +82,17 @@ namespace Delete_Push_Pull.Properties {
                 this["GenSheets"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("22")]
+        public decimal ExcelFontSize {
+            get {
+                return ((decimal)(this["ExcelFontSize"]));
+            }
+            set {
+                this["ExcelFontSize"] = value;
+            }
+        }
     }
 }

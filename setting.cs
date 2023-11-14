@@ -24,6 +24,8 @@ namespace Delete_Push_Pull
             lblPull.Text = "Current Dir Selected: " + (string)Settings.Default["Cloud"];
             lblBackup.Text = "Current Dir Selected: " + (string)Settings.Default["BackupDir"];
             lblGenSheets.Text = "Current Dir Selected: " + (string)Settings.Default["GenSheets"];
+            decimal ExcelFontSize = (decimal)Settings.Default["ExcelFontSize"];
+            lblFontSizeDisplay.Text = ExcelFontSize.ToString();
         }
 
         private void btnChangeDeleteDir_Click(object sender, EventArgs e)
@@ -57,7 +59,8 @@ namespace Delete_Push_Pull
                 dataInstance.ClearAllData();
                 var dataLoader = new DataLoader("");
 
-                if (!dataLoader.LoadAllData()){
+                if (!dataLoader.LoadAllData())
+                {
                     MessageBox.Show("Push Dir Updated. \n LoadAllData FAILED");
                 }
                 MessageBox.Show("Push Dir Updated. \n LoadAllData Loaded Successfully.");
@@ -116,6 +119,16 @@ namespace Delete_Push_Pull
                 Settings.Default["GenSheets"] = "";
             }
             lblGenSheets.Text = "Current Dir Selected: " + (string)Settings.Default["GenSheets"];
+        }
+
+        private void btnExcelFontChange_Click(object sender, EventArgs e)
+        {
+            decimal ExcelFontSize = (decimal)Settings.Default["ExcelFontSize"];
+            //numInputExcelFont
+            //lblFontSizeDisplay            
+            Settings.Default["ExcelFontSize"] = numInputExcelFont.Value;
+            Settings.Default.Save();
+            lblFontSizeDisplay.Text = ExcelFontSize.ToString();
         }
     }
 }

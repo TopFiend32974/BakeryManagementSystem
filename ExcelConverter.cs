@@ -1,4 +1,5 @@
-﻿using OfficeOpenXml;
+﻿using Delete_Push_Pull.Properties;
+using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System;
 using System.Collections.Generic;
@@ -803,6 +804,15 @@ namespace Delete_Push_Pull
 
         public static void AdjustExcelPrint(ExcelWorksheet worksheet)
         {
+            string cellRange = "A1:AQ200"; // Change this to the range you need
+
+            // Set the font size for the specified cell range
+            using (var cells = worksheet.Cells[cellRange])
+            {
+                cells.Style.Font.Size = (float)(decimal)Settings.Default["ExcelFontSize"];
+                worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns(0);
+
+            }
 
             // Set narrower margins
             worksheet.PrinterSettings.LeftMargin = 0.25m;  

@@ -28,134 +28,167 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.lblBackup = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.lblPull = new System.Windows.Forms.Label();
-            this.btnPullDir = new System.Windows.Forms.Button();
-            this.lblPush = new System.Windows.Forms.Label();
-            this.btnPushDir = new System.Windows.Forms.Button();
-            this.lblShowDir = new System.Windows.Forms.Label();
-            this.btnChangeDeleteDir = new System.Windows.Forms.Button();
-            this.btnSheetGen = new System.Windows.Forms.Button();
-            this.lblGenSheets = new System.Windows.Forms.Label();
-            this.SuspendLayout();
+            lblBackup = new Label();
+            button1 = new Button();
+            lblPull = new Label();
+            btnPullDir = new Button();
+            lblPush = new Label();
+            btnPushDir = new Button();
+            lblShowDir = new Label();
+            btnChangeDeleteDir = new Button();
+            btnSheetGen = new Button();
+            lblGenSheets = new Label();
+            btnExcelFontChange = new Button();
+            lblFontSizeDisplay = new Label();
+            numInputExcelFont = new NumericUpDown();
+            ((System.ComponentModel.ISupportInitialize)numInputExcelFont).BeginInit();
+            SuspendLayout();
             // 
             // lblBackup
             // 
-            this.lblBackup.AutoSize = true;
-            this.lblBackup.Location = new System.Drawing.Point(159, 107);
-            this.lblBackup.Name = "lblBackup";
-            this.lblBackup.Size = new System.Drawing.Size(67, 15);
-            this.lblBackup.TabIndex = 25;
-            this.lblBackup.Text = "Backup Dir:";
+            lblBackup.AutoSize = true;
+            lblBackup.Location = new Point(159, 107);
+            lblBackup.Name = "lblBackup";
+            lblBackup.Size = new Size(67, 15);
+            lblBackup.TabIndex = 25;
+            lblBackup.Text = "Backup Dir:";
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(25, 103);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(128, 23);
-            this.button1.TabIndex = 24;
-            this.button1.Text = "Backup Location";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            button1.Location = new Point(25, 103);
+            button1.Name = "button1";
+            button1.Size = new Size(128, 23);
+            button1.TabIndex = 24;
+            button1.Text = "Backup Location";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click_1;
             // 
             // lblPull
             // 
-            this.lblPull.AutoSize = true;
-            this.lblPull.Location = new System.Drawing.Point(150, 136);
-            this.lblPull.Name = "lblPull";
-            this.lblPull.Size = new System.Drawing.Size(25, 15);
-            this.lblPull.TabIndex = 23;
-            this.lblPull.Text = "Dir:";
+            lblPull.AutoSize = true;
+            lblPull.Location = new Point(150, 136);
+            lblPull.Name = "lblPull";
+            lblPull.Size = new Size(25, 15);
+            lblPull.TabIndex = 23;
+            lblPull.Text = "Dir:";
             // 
             // btnPullDir
             // 
-            this.btnPullDir.Location = new System.Drawing.Point(25, 132);
-            this.btnPullDir.Name = "btnPullDir";
-            this.btnPullDir.Size = new System.Drawing.Size(119, 23);
-            this.btnPullDir.TabIndex = 22;
-            this.btnPullDir.Text = "Change Cloud Dir";
-            this.btnPullDir.UseVisualStyleBackColor = true;
-            this.btnPullDir.Click += new System.EventHandler(this.btnPullDir_Click_1);
+            btnPullDir.Location = new Point(25, 132);
+            btnPullDir.Name = "btnPullDir";
+            btnPullDir.Size = new Size(119, 23);
+            btnPullDir.TabIndex = 22;
+            btnPullDir.Text = "Change Cloud Dir";
+            btnPullDir.UseVisualStyleBackColor = true;
+            btnPullDir.Click += btnPullDir_Click_1;
             // 
             // lblPush
             // 
-            this.lblPush.AutoSize = true;
-            this.lblPush.Location = new System.Drawing.Point(150, 78);
-            this.lblPush.Name = "lblPush";
-            this.lblPush.Size = new System.Drawing.Size(25, 15);
-            this.lblPush.TabIndex = 21;
-            this.lblPush.Text = "Dir:";
+            lblPush.AutoSize = true;
+            lblPush.Location = new Point(150, 78);
+            lblPush.Name = "lblPush";
+            lblPush.Size = new Size(25, 15);
+            lblPush.TabIndex = 21;
+            lblPush.Text = "Dir:";
             // 
             // btnPushDir
             // 
-            this.btnPushDir.Location = new System.Drawing.Point(25, 74);
-            this.btnPushDir.Name = "btnPushDir";
-            this.btnPushDir.Size = new System.Drawing.Size(119, 23);
-            this.btnPushDir.TabIndex = 20;
-            this.btnPushDir.Text = "Change Local Dir";
-            this.btnPushDir.UseVisualStyleBackColor = true;
-            this.btnPushDir.Click += new System.EventHandler(this.btnPushDir_Click_1);
+            btnPushDir.Location = new Point(25, 74);
+            btnPushDir.Name = "btnPushDir";
+            btnPushDir.Size = new Size(119, 23);
+            btnPushDir.TabIndex = 20;
+            btnPushDir.Text = "Change Local Dir";
+            btnPushDir.UseVisualStyleBackColor = true;
+            btnPushDir.Click += btnPushDir_Click_1;
             // 
             // lblShowDir
             // 
-            this.lblShowDir.AutoSize = true;
-            this.lblShowDir.Location = new System.Drawing.Point(150, 45);
-            this.lblShowDir.Name = "lblShowDir";
-            this.lblShowDir.Size = new System.Drawing.Size(25, 15);
-            this.lblShowDir.TabIndex = 19;
-            this.lblShowDir.Text = "Dir:";
+            lblShowDir.AutoSize = true;
+            lblShowDir.Location = new Point(150, 45);
+            lblShowDir.Name = "lblShowDir";
+            lblShowDir.Size = new Size(25, 15);
+            lblShowDir.TabIndex = 19;
+            lblShowDir.Text = "Dir:";
             // 
             // btnChangeDeleteDir
             // 
-            this.btnChangeDeleteDir.Location = new System.Drawing.Point(25, 41);
-            this.btnChangeDeleteDir.Name = "btnChangeDeleteDir";
-            this.btnChangeDeleteDir.Size = new System.Drawing.Size(119, 23);
-            this.btnChangeDeleteDir.TabIndex = 18;
-            this.btnChangeDeleteDir.Text = "Change Delete Dir";
-            this.btnChangeDeleteDir.UseVisualStyleBackColor = true;
-            this.btnChangeDeleteDir.Click += new System.EventHandler(this.btnChangeDeleteDir_Click);
+            btnChangeDeleteDir.Location = new Point(25, 41);
+            btnChangeDeleteDir.Name = "btnChangeDeleteDir";
+            btnChangeDeleteDir.Size = new Size(119, 23);
+            btnChangeDeleteDir.TabIndex = 18;
+            btnChangeDeleteDir.Text = "Change Delete Dir";
+            btnChangeDeleteDir.UseVisualStyleBackColor = true;
+            btnChangeDeleteDir.Click += btnChangeDeleteDir_Click;
             // 
             // btnSheetGen
             // 
-            this.btnSheetGen.Location = new System.Drawing.Point(25, 161);
-            this.btnSheetGen.Name = "btnSheetGen";
-            this.btnSheetGen.Size = new System.Drawing.Size(140, 23);
-            this.btnSheetGen.TabIndex = 26;
-            this.btnSheetGen.Text = "Change Sheets-Gen Dir";
-            this.btnSheetGen.UseVisualStyleBackColor = true;
-            this.btnSheetGen.Click += new System.EventHandler(this.btnSheetGen_Click);
+            btnSheetGen.Location = new Point(25, 161);
+            btnSheetGen.Name = "btnSheetGen";
+            btnSheetGen.Size = new Size(140, 23);
+            btnSheetGen.TabIndex = 26;
+            btnSheetGen.Text = "Change Sheets-Gen Dir";
+            btnSheetGen.UseVisualStyleBackColor = true;
+            btnSheetGen.Click += btnSheetGen_Click;
             // 
             // lblGenSheets
             // 
-            this.lblGenSheets.AutoSize = true;
-            this.lblGenSheets.Location = new System.Drawing.Point(172, 165);
-            this.lblGenSheets.Name = "lblGenSheets";
-            this.lblGenSheets.Size = new System.Drawing.Size(22, 15);
-            this.lblGenSheets.TabIndex = 27;
-            this.lblGenSheets.Text = "Dir";
+            lblGenSheets.AutoSize = true;
+            lblGenSheets.Location = new Point(172, 165);
+            lblGenSheets.Name = "lblGenSheets";
+            lblGenSheets.Size = new Size(22, 15);
+            lblGenSheets.TabIndex = 27;
+            lblGenSheets.Text = "Dir";
+            // 
+            // btnExcelFontChange
+            // 
+            btnExcelFontChange.Location = new Point(600, 74);
+            btnExcelFontChange.Name = "btnExcelFontChange";
+            btnExcelFontChange.Size = new Size(140, 23);
+            btnExcelFontChange.TabIndex = 28;
+            btnExcelFontChange.Text = "Change Excel Font Size";
+            btnExcelFontChange.UseVisualStyleBackColor = true;
+            btnExcelFontChange.Click += btnExcelFontChange_Click;
+            // 
+            // lblFontSizeDisplay
+            // 
+            lblFontSizeDisplay.AutoSize = true;
+            lblFontSizeDisplay.Location = new Point(600, 111);
+            lblFontSizeDisplay.Name = "lblFontSizeDisplay";
+            lblFontSizeDisplay.Size = new Size(57, 15);
+            lblFontSizeDisplay.TabIndex = 29;
+            lblFontSizeDisplay.Text = "Font Size:";
+            // 
+            // numInputExcelFont
+            // 
+            numInputExcelFont.Location = new Point(610, 45);
+            numInputExcelFont.Name = "numInputExcelFont";
+            numInputExcelFont.Size = new Size(120, 23);
+            numInputExcelFont.TabIndex = 31;
             // 
             // setting
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.lblGenSheets);
-            this.Controls.Add(this.btnSheetGen);
-            this.Controls.Add(this.btnChangeDeleteDir);
-            this.Controls.Add(this.lblBackup);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.lblPull);
-            this.Controls.Add(this.btnPullDir);
-            this.Controls.Add(this.lblPush);
-            this.Controls.Add(this.btnPushDir);
-            this.Controls.Add(this.lblShowDir);
-            this.Name = "setting";
-            this.Text = "setting";
-            this.Load += new System.EventHandler(this.setting_Load_1);
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(800, 450);
+            Controls.Add(numInputExcelFont);
+            Controls.Add(lblFontSizeDisplay);
+            Controls.Add(btnExcelFontChange);
+            Controls.Add(lblGenSheets);
+            Controls.Add(btnSheetGen);
+            Controls.Add(btnChangeDeleteDir);
+            Controls.Add(lblBackup);
+            Controls.Add(button1);
+            Controls.Add(lblPull);
+            Controls.Add(btnPullDir);
+            Controls.Add(lblPush);
+            Controls.Add(btnPushDir);
+            Controls.Add(lblShowDir);
+            Name = "setting";
+            Text = "setting";
+            Load += setting_Load_1;
+            ((System.ComponentModel.ISupportInitialize)numInputExcelFont).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -170,5 +203,8 @@
         private Button btnChangeDeleteDir;
         private Button btnSheetGen;
         private Label lblGenSheets;
+        private Button btnExcelFontChange;
+        private Label lblFontSizeDisplay;
+        private NumericUpDown numInputExcelFont;
     }
 }
