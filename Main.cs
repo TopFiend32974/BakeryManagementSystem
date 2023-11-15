@@ -115,8 +115,7 @@ namespace Delete_Push_Pull
             // Check each method and return false if any method fails
             if (!ExcelConversions.GenerateMatrixReport(selectedDay, GenSheets))
                 return false;
-            //if (!ExcelConversions.OutputCustomerOrdersToExcel(selectedDay, GenSheets))
-            //    return false;
+            
             if (!ExcelConversions.GenerateBreadSortedSheet(selectedDay, GenSheets))
                 return false;
             if (!ExcelConversions.GeneratePartBakePastyCocktailReport(selectedDay, GenSheets))
@@ -127,9 +126,14 @@ namespace Delete_Push_Pull
                 return false;
             if (!ExcelConversions.GenerateBapReport(selectedDay, GenSheets))
                 return false;
-            if (!Delivery.FilterAndOutputPriorityList(selectedDay))
+            if (!ExcelConversions.GenerateCakeReport(selectedDay, GenSheets))
                 return false;
-
+            if (!DeliveryRoutes.FilterAndOutputPriorityList(selectedDay))
+                return false;
+            //if (!Delivery.FilterAndOutputPriorityList(selectedDay))
+            //    return false;
+            //if (!ExcelConversions.OutputCustomerOrdersToExcel(selectedDay, GenSheets))
+            //    return false;
             //If all methods executed successfully, return true
             return true;
         }

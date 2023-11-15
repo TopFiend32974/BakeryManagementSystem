@@ -13,6 +13,7 @@ namespace Delete_Push_Pull
     internal class ExcelConversions
     {
 
+
         public static bool GenerateMatrixReport(DayOfWeek selectedDay, string GenSheets)
         {
 
@@ -22,7 +23,7 @@ namespace Delete_Push_Pull
 
                 // Specify the output Excel file path
                 string outputFilePath = GenSheets + $@"\MyMatrix_{selectedDay}.xlsx";
-
+                ExcelDeleteOriginalFile(outputFilePath);
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
                 using (var package = new ExcelPackage())
@@ -224,7 +225,6 @@ namespace Delete_Push_Pull
             {
                 // Specify the output Excel file path
                 string outputFilePath = GenSheets + $@"\MyMatrix_{selectedDay}.xlsx";
-
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
                 using (var package = new ExcelPackage(new FileInfo(outputFilePath)))
@@ -253,7 +253,7 @@ namespace Delete_Push_Pull
                                 var product = (orderItem.Product.ProductId, orderItem.Product.ProductName);
 
                                 // Check if the product name contains "sliced" or "doorstep"
-                                if (product.ProductName.Contains("SLICED", StringComparison.OrdinalIgnoreCase) ||
+                                if (product.ProductName.Contains("SLICE", StringComparison.OrdinalIgnoreCase) ||
                                     product.ProductName.Contains("DOORSTEP", StringComparison.OrdinalIgnoreCase))
                                 {
                                     // Check if the product is already in the list; if not, add it
@@ -345,7 +345,6 @@ namespace Delete_Push_Pull
             {
                 // Specify the output Excel file path for the Part Bake Pasty Cocktail report
                 string outputFilePath = GenSheets + $@"\MyMatrix_{selectedDay}.xlsx";
-
 
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
@@ -467,7 +466,6 @@ namespace Delete_Push_Pull
             {
                 string outputFilePath = GenSheets + $@"\MyMatrix_{selectedDay}.xlsx";
 
-
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
                 using (var package = new ExcelPackage(new FileInfo(outputFilePath)))
@@ -581,7 +579,6 @@ namespace Delete_Push_Pull
             try
             {
                 string outputFilePath = GenSheets + $@"\MyMatrix_{selectedDay}.xlsx";
-
 
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
@@ -801,6 +798,125 @@ namespace Delete_Push_Pull
             return keywords.Any(keyword => productName.ToLower().Contains(keyword));
         }
 
+
+
+        public static bool GenerateCakeReport(DayOfWeek selectedDay, string GenSheets)
+        {
+            try
+            {
+                string outputFilePath = GenSheets + $@"\MyMatrix_{selectedDay}.xlsx";
+
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+                using (var package = new ExcelPackage(new FileInfo(outputFilePath)))
+                {
+
+                    // Create a new sheet for cakes
+                    var worksheet = package.Workbook.Worksheets.Add("Cake Matrix");
+
+                    var ordersByDay = Data.GetInstance().GetOrders(selectedDay);
+
+                    if (ordersByDay.Count > 0)
+                    {
+                        // Create a header row
+                        worksheet.Cells["A1"].Value = "ID";
+                        worksheet.Cells["B1"].Value = "Prod Name";
+
+                        var uniqueCustomers = ordersByDay
+                            .SelectMany(o => o.OrderItems
+                                .Where(oi => oi.Product.ProductId >= 216 && oi.Product.ProductId <= 253)
+                                .Select(oi => oi.Order.Customer))
+                            .Distinct()
+                            .OrderBy(c => c.CustomerID)
+                            .ToList();
+
+                        int col = 3; // Start from column C
+                        int lastCol = col + uniqueCustomers.Count - 1;
+
+                        // Set the customer names in the header row at an angle
+                        foreach (var customer in uniqueCustomers)
+                        {
+                            var cell = worksheet.Cells[1, col];
+                            cell.Value = customer.CustomerName;
+                            cell.Style.TextRotation = 90; // Rotate text clockwise by 90 degrees
+                            col++;
+                        }
+
+                        worksheet.Cells[1, lastCol + 1].Value = "Quantity"; // Column for Quantity
+
+                        var uniqueProducts = ordersByDay.SelectMany(o => o.OrderItems.Select(oi => oi.Product))
+                            .Distinct()
+                            .Where(p => p.ProductId >= 216 && p.ProductId <= 253)
+                            .OrderBy(p => p.ProductId)
+                            .ToList();
+
+                        int row = 2;
+
+                        foreach (var product in uniqueProducts)
+                        {
+                            worksheet.Cells[row, 1].Value = product.ProductId;
+                            worksheet.Cells[row, 2].Value = product.ProductName;
+
+                            col = 3;
+
+                            foreach (var customer in uniqueCustomers)
+                            {
+                                var quantity = ordersByDay.SelectMany(o => o.OrderItems)
+                                    .Where(oi => oi.Product.ProductId == product.ProductId && oi.Order.Customer == customer)
+                                    .Sum(oi => oi.Quantity);
+
+                                if (quantity != 0)
+                                {
+                                    worksheet.Cells[row, col].Value = quantity;
+                                }
+                                else
+                                {
+                                    worksheet.Cells[row, col].Value = null;
+                                }
+
+                                col++;
+                            }
+
+                            worksheet.Cells[row, lastCol + 1].Formula = $"SUM(C{row}:{ConvertToLetter(lastCol)}{row})"; // Dynamic SUM formula
+                            row++;
+                        }
+
+                        worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns(0);
+                    }
+
+                    AdjustExcelPrint(worksheet);
+                    package.Save();
+                    //MessageBox.Show($"Cake Report for {selectedDay} exported to {outputFilePath}");
+                }
+
+                return true; // Method executed successfully
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+                // Handle exceptions and return false on failure
+                return false;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+        public static void ExcelDeleteOriginalFile(string GenSheets)
+        {
+            if (File.Exists(GenSheets))
+            {
+                File.Delete(GenSheets);
+            }
+    
+        }
 
         public static void AdjustExcelPrint(ExcelWorksheet worksheet)
         {

@@ -55,133 +55,52 @@ namespace Delete_Push_Pull
         }
     }  
 
-    public class jsonData
-    {
-        string CustomerName { get; set; }
-    }
-
     class DeliveryRoutes
     {
-
-        public static bool CheckJsonExists()
+        public static bool FilterAndOutputPriorityList(DayOfWeek selectedDay)
         {
             try
             {
-                string filePath = (string)Settings.Default["Local"] + @"\Delivery.json";
+                var jsonFilePath = (string)Settings.Default["Local"] + @"\CustomerDeliveryRuns.json"; // Change to your actual JSON file path
+                var outputFilePath = (string)Settings.Default["GenSheets"] + @"\delivery.txt";
 
-                // Check if the file already exists
-                if (!File.Exists(filePath))
+                ExcelConversions.ExcelDeleteOriginalFile(outputFilePath);
+
+                // Read customer delivery runs from JSON
+                Dictionary<string, List<string>> customerRuns = ReadJsonFile(jsonFilePath);
+
+                // Check if the "RunA" key exists
+                if (customerRuns.ContainsKey("RunA"))
                 {
-                    //create new "Delivery.json" file in local folder
-                    using (StreamWriter writer = new StreamWriter(filePath))
+                    List<string> runACustomers = customerRuns["RunA"];
+
+                    // Filter orders for the selected day
+                    var ordersByDay = Data.GetInstance().GetOrders(selectedDay);
+
+                    // Create a list to store customer names in the order they appear in the JSON file
+                    List<string> customerNamesInOrder = new List<string>();
+
+                    // Iterate through customer names in the JSON order
+                    foreach (var customerName in runACustomers)
                     {
-                        writer.WriteLine("{\"RunA\":[],\"RunB\":[]}");
-                    }
-                    
-                }
-                return true;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("An error occurred: " + ex.Message);
-                return false;
-            }
-        }
-        public static void jsonRead(string Local)
-        {
-            try
-            {
-                //Get Local Dir
-                string deliveryJSONFile = Local + @"\Delivery.json";
-
-                // Read the JSON data
-                string jsonContent = File.ReadAllText(deliveryJSONFile);
-                var jsonData = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(jsonContent);
-
-                // Specify the path for the CSV file
-                string csvFilePath = Path.Combine(Local, "testingDelivery.csv");
-
-                using (var writer = new StreamWriter(csvFilePath))
-                using (var csv = new CsvWriter(writer, new CsvConfiguration(CultureInfo.InvariantCulture)))
-                {
-                    // Loop through "RunA" data and write it to the CSV file
-                    foreach (var item in jsonData["RunA"])
-                    {
-                        //write the record in one column of the csv file
-                        csv.WriteRecord(new { Run = "A", Input = item});
+                        // Check if the customer has orders for the selected day
+                        if (ordersByDay.Any(o => o.OrderItems.Any(oi => oi.Order.Customer.CustomerName == customerName)))
+                        {
+                            customerNamesInOrder.Add(customerName);
+                        }
                     }
 
-                    // Loop through "RunB" data and write it to the CSV file
-                    foreach (var item in jsonData["RunB"])
-                    {
-                        csv.WriteRecord(new { Run = "B", Input = item });
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }   
-            
+                    // Write the customer names to the "delivery.txt" file
+                    File.WriteAllLines(outputFilePath, customerNamesInOrder);
 
-        }
-
-
-        public static bool GenerateDeliveryFromJson (DayOfWeek selectedDay, string Local)
-        {
-            try
-            {
-                if (!CheckJsonExists())
-                {
-                    MessageBox.Show("How Did that happen? - ERROR CREATING DELIVERY EXCEL SHEET");
-                    return false;
+                    MessageBox.Show($"Delivery list for {selectedDay} exported to {outputFilePath}");
                 }
                 else
                 {
-                    // Load the existing Excel file
-                    string deliveryJSONFile = Local + @"\Delivery.json";
-                    
-                    var customers = Data.GetInstance().GetCustomers();
-                    var ordersByDay = new List<Order>();
-
-                    // Filter orders for the selected day
-                    foreach (var customer in customers)
-                    {
-                        var customerOrders = Data.GetInstance().GetOrders(selectedDay).Where(o => o.Customer == customer);
-                        if (customerOrders.Any())
-                        {
-                            ordersByDay.AddRange(customerOrders);
-                        }
-                    }
-                    // Generate a list of all customers
-                    List<Customer> allCustomers = Data.GetInstance().GetCustomers();
-                   
-                    foreach (var customer in allCustomers)
-                    {
-                        if (customer.CustomerName != "***")
-                        {
-                                
-                        }
-                    }
-                    if (ordersByDay.Count > 0)
-                    {
-                        foreach (var customerOrder in ordersByDay)
-                        {
-                            // Assuming you have extracted the relevant data from the JSON file and stored it in a variable named 'jsonData'
-                            string cellValue = "";//jsonData.CustomerName; Replace 'CustomerName' with the actual field name from your JSON data
-
-                            foreach (var orderItem in customerOrder.OrderItems)
-                            {
-                                if (orderItem.Order.Customer.CustomerName == cellValue)
-                                {
-                                    // Update the Excel file with the customer name
-                                    // Here, you need to add code to update the Excel file based on the match
-                                    // You haven't provided details about your Excel file structure, so you'll need to adapt this part to your specific needs.
-                                }
-                            }
-                        }
-                    }
+                    MessageBox.Show("The specified delivery run key does not exist in the JSON file.");
+                    return false;
                 }
+
                 return true;
             }
             catch (Exception ex)
@@ -192,5 +111,26 @@ namespace Delete_Push_Pull
             }
         }
 
-    }     
+        private static Dictionary<string, List<string>> ReadJsonFile(string filePath)
+        {
+            try
+            {
+                // Read JSON content from file
+                string jsonContent = File.ReadAllText(filePath);
+
+                // Deserialize JSON into a dictionary
+                var customerRuns = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(jsonContent);
+
+                return customerRuns;
+            }
+            catch (Exception ex)
+            {
+                // Handle or log the exception for debugging
+                MessageBox.Show("An error occurred while reading the JSON file: " + ex.Message);
+                return null;
+            }
+        }
+
+
+    }
 }
