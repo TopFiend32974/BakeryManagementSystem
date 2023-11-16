@@ -454,7 +454,7 @@ namespace Delete_Push_Pull
         // Helper function to check if a product is "part bake," "pasty," or "cocktail"
         private static bool IsPartBakePastyCocktailProduct(string productName)
         {
-            string[] keywords = { "part bake", "pasty", "cocktail" };
+            string[] keywords = { "part bake", "pas", "cocktail" };
             return keywords.Any(keyword => productName.ToLower().Contains(keyword));
         }
 

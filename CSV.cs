@@ -93,7 +93,7 @@ namespace Delete_Push_Pull
                     // Write the customer names to the "delivery.txt" file
                     File.WriteAllLines(outputFilePath, customerNamesInOrder);
 
-                    MessageBox.Show($"Delivery list for {selectedDay} exported to {outputFilePath}");
+                   // MessageBox.Show($"Delivery list for {selectedDay} exported to {outputFilePath}");
                 }
                 else
                 {
