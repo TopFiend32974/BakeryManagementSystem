@@ -95,8 +95,7 @@ namespace Delete_Push_Pull
 
                         worksheet.Cells["K1"].Value = $"Output: {selectedDay}";
 
-                        // Populate all customers in Column 17 ("reference")
-                        int referenceColumn = 17; // Column Q
+                        // Populate all customers in Column 17 ("reference
                         int startRow = 2; // Start from row 2
 
                         foreach (var customer in allCustomers)

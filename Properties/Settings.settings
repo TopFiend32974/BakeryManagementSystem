@@ -20,5 +20,11 @@
     <Setting Name="ExcelFontSize" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">22</Value>
     </Setting>
+    <Setting Name="ProductionHelpDir" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="null" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

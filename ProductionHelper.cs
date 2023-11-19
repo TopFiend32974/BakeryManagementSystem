@@ -1,8 +1,11 @@
-﻿using OfficeOpenXml;
+﻿using Microsoft.Office.Interop.Excel;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Printing;
+using System.Drawing.Text;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,190 +13,22 @@ namespace Delete_Push_Pull
 {
     internal class ProductionHelp
     {
-        public static void ProductionHelperMain(DayOfWeek selectedDay, string GenSheets)
+        public static bool ProductionHelperMain(DayOfWeek selectedDay, string GenProd)
         {
-            GenPastyHelper(selectedDay, GenSheets);
-            //GentrayHelper(selectedDay, GenSheets);
-
-        }
-
-        public static bool GentrayHelper(DayOfWeek selectedDay, string GenSheets)
-        {
-            try
-            {
-                // Specify the output Excel file path for the Pasty Helper report
-                string outputFilePath = GenSheets + $@"\ProductionHelper_{selectedDay}.xlsx";
-
-                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-
-                using (var package = new ExcelPackage(new FileInfo(outputFilePath)))
-                {
-                    var worksheet = package.Workbook.Worksheets.Add("TrayHelper");
-
-                    var ordersByDay = Data.GetInstance().GetOrders(selectedDay);
-
-                    int totalOtherQuantity = 0;
-                    int totalSplitsQuantity = 0;
-                    int totalBapQuantity = 0;
-                    int totalFrisbyQuantity = 0;
-                    int totalFingerQuantity = 0;
-                    int totalTorpedoQuantity = 0;
-                    int totalSquareQuantity = 0;
-                    int totalLargeQuantity = 0;
-                    int totalSmallQuantity = 0;
-                    int totalHarvTraysQuantity = 0;
-                    int totalX4TraysQuantity = 0;
-                    int totalWhiteTraysQuantity = 0;
-
-                    if (ordersByDay.Count > 0)
-                    {
-                        // Create a header row
-                        worksheet.Cells["A1"].Value = "Product ID";
-                        worksheet.Cells["B1"].Value = "Product Name";
-                        worksheet.Cells["C1"].Value = "Quantity";
-                        worksheet.Cells["D1"].Value = "Trays Required";
-
-                        var uniqueProducts = ordersByDay.SelectMany(o => o.OrderItems.Select(oi => oi.Product))
-                            .Distinct()
-                            .OrderBy(p => p.ProductId)
-                            .ToList();
-
-                        int row = 2;
-
-                        // Define a dictionary for product types and their tray requirements
-                        Dictionary<string, double> trayRequirements = new Dictionary<string, double>
-                        {
-                            { "splits", 30.0 },
-                            { "bap", 24.0 },
-                            { "frisby", 20.0 },
-                            { "finger", 30.0 },
-                            { "torpedo", 15.0 },
-                            { "square", 4.0 },
-                            { "large", 4.0 },
-                            { "small", 4.0 },
-                            { "harvest", 0.0 },
-                            { "x4", 0.0 },
-                            { "white", 0.0 }
-                        };
-
-                        foreach (var product in uniqueProducts)
-                        {
-                            if (product.ProductType == Product.ProductTypeEnum.S)
-                            {
-                                int totalQuantity = ordersByDay.SelectMany(o => o.OrderItems)
-                                    .Where(oi => oi.Product.ProductId == product.ProductId)
-                                    .Sum(oi => oi.Quantity);
-
-                                if (totalQuantity > 0)
-                                {
-                                    double traysRequired = trayRequirements
-                                        .Where(entry => product.ProductName.ToLower().Contains(entry.Key))
-                                        .Select(entry => totalQuantity / entry.Value)
-                                        .FirstOrDefault();
-
-                                    // Update the total quantity based on product type
-                                    if (product.ProductName.ToLower().Contains("harvest") ||
-                                        product.ProductName.ToLower().Contains("white"))
-                                    {
-                                        totalHarvTraysQuantity += totalQuantity;
-                                    }
-                                    else if (product.ProductName.ToLower().Contains("x4"))
-                                    {
-                                        totalX4TraysQuantity += totalQuantity;
-                                    }
-                                    else
-                                    {
-                                        totalOtherQuantity += totalQuantity;
-                                    }
-
-                                    worksheet.Cells[row, 1].Value = product.ProductId;
-                                    worksheet.Cells[row, 2].Value = product.ProductName;
-                                    worksheet.Cells[row, 3].Value = totalQuantity;
-                                    worksheet.Cells[row, 4].Value = traysRequired;
-                                    row++;
-                                }
-                            }
-                        }
-
-                        // Insert rows for totals
-                        row++;
-                        row++;
-                        worksheet.Cells[row, 2].Value = "Splits Total";
-                        worksheet.Cells[row, 3].Value = totalSplitsQuantity;
-                        row++;
-                        worksheet.Cells[row, 2].Value = "Bap(Ish) Up Total";
-                        worksheet.Cells[row, 3].Value = totalBapQuantity;  // Display the total for "chick" and "chicken"
-                        row++;
-                        worksheet.Cells[row, 2].Value = "Frisby Total";
-                        worksheet.Cells[row, 3].Value = totalFrisbyQuantity;
-                        row++;
-                        worksheet.Cells[row, 2].Value = "Finger total?";
-                        worksheet.Cells[row, 3].Value = totalFingerQuantity;
-                        row++;
-                        worksheet.Cells[row, 2].Value = "torpedo Up Total";
-                        worksheet.Cells[row, 3].Value = totalTorpedoQuantity;
-                        row++;
-                        worksheet.Cells[row, 2].Value = "Square Total";
-                        worksheet.Cells[row, 3].Value = totalSquareQuantity;
-                        row++;
-                        row++;
-                        worksheet.InsertRow(row, 6);
-                        worksheet.Cells[row, 2].Value = "Total Large";
-                        worksheet.Cells[row, 3].Value = totalLargeQuantity;
-                        row++;
-                        worksheet.Cells[row, 2].Value = "total small";
-                        worksheet.Cells[row, 3].Value = totalSmallQuantity;
-                        row++;
-                        worksheet.Cells[row, 2].Value = "Total harv";
-                        worksheet.Cells[row, 3].Value = totalHarvTraysQuantity;
-                        row++;
-                        worksheet.Cells[row, 2].Value = "Total x4";
-                        worksheet.Cells[row, 3].Value = totalX4TraysQuantity;
-                        row++;
-                        worksheet.Cells[row, 2].Value = "Total whitetrays";
-                        worksheet.Cells[row, 3].Value = totalWhiteTraysQuantity;
-                        row++;
-
-                        worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns(0);
-                    }
-
-                    package.SaveAs(new FileInfo(outputFilePath));
-                }
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
+            if (!GenPastyHelper(selectedDay, GenProd))            
                 return false;
-            }
+            //if (!GenTrayHelper(selectedDay, GenSheets))
+            //    return false;
+                        
+             return true;
         }
-
-
-
-
-        private static bool TrayKeywords(string productName)
-        {
-            string[] keywords = { "roll", "rolls", "bap", "baps", "frisby", "frisbees", "torpedo", "splits", "square", "sq", "large", "lrg", "lg", "small", "sm" };
-            return keywords.Any(keyword => productName.ToLower().Contains(keyword));
-        }
-        private static bool IsProductTypeStartingWithS(string productType)
-        {
-            return productType.StartsWith("S", StringComparison.OrdinalIgnoreCase);
-        }
-
-
-
-
-        //----------------------------------------//
-
-
-        public static bool GenPastyHelper(DayOfWeek selectedDay, string GenSheets)
+       
+        public static bool GenPastyHelper(DayOfWeek selectedDay, string GenProd)
         {
             try
             {
                 // Specify the output Excel file path for the Pasty Helper report
-                string outputFilePath = GenSheets + $@"\ProductionHelper_{selectedDay}.xlsx";
+                string outputFilePath = GenProd + $@"\ProductionHelper_{selectedDay}.xlsx";
 
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 

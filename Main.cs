@@ -27,7 +27,23 @@ namespace Delete_Push_Pull
         [STAThread]
         public static void LoadMainClass()
         {
-            ExportData(selectedDayInstance.SelectedDay);
+
+            string GenSheetsDir = (string)Settings.Default["GenSheets"];
+            DayOfWeek selectedDay = selectedDayInstance.SelectedDay;
+            DeleteSection.DeleteFiles(GenSheetsDir);
+
+            //DataValidation.CheckCSV(GenSheetsDir);
+            DataValidation.CheckExcel(selectedDay, GenSheetsDir);
+            DataValidation.CheckDelviery(selectedDay);  
+            
+        }
+        public static void LoadProductionHelper()
+        {
+            string GenProductionDir = (string)Settings.Default["ProductionHelpDir"];
+            DayOfWeek selectedDay = selectedDayInstance.SelectedDay;
+            DeleteSection.DeleteFiles(GenProductionDir);
+
+            DataValidation.CheckProductionHelper(selectedDay, GenProductionDir);
         }
         public static void ShowDaySelectionDialog()
         {
@@ -70,41 +86,7 @@ namespace Delete_Push_Pull
 
             daySelectionForm.ShowDialog();
         }
-
-
-        public static void ExportData(DayOfWeek selectedDay)
-        {
-
-            //Passes through directories
-            string BackupDir = (string)Settings.Default["BackupDir"];
-            string PushtoCloud = (string)Settings.Default["Local"];
-            string PulltoLocal = (string)Settings.Default["Cloud"];
-            string GenSheetsDir = (string)Settings.Default["GenSheets"];
-            string LocalLabelsDir = (string)Settings.Default["DeleteDir"];
-
-            //DeliveryRoutes.Delivery(PushtoCloud);
-            ProductionHelp.ProductionHelperMain(selectedDay, GenSheetsDir);
-            //DataValidation.CheckCSV(GenSheetsDir);
-
-            if (DataValidation.CheckExcel(selectedDay, GenSheetsDir))
-            {
-                MessageBox.Show(selectedDay + " Excel Sheets Generated.");
-            }
-            else
-            {
-                MessageBox.Show("Excel Did not work.");
-
-            }
-            //GoogleAPI.GoogleCredientials(selectedDay);
-
-        }
-
     }
-
-
-    //---------------------------------//
-
-
 
     internal class DataValidation
     {
@@ -114,8 +96,7 @@ namespace Delete_Push_Pull
         {
             // Check each method and return false if any method fails
             if (!ExcelConversions.GenerateMatrixReport(selectedDay, GenSheets))
-                return false;
-            
+                return false;            
             if (!ExcelConversions.GenerateBreadSortedSheet(selectedDay, GenSheets))
                 return false;
             if (!ExcelConversions.GeneratePartBakePastyCocktailReport(selectedDay, GenSheets))
@@ -130,11 +111,8 @@ namespace Delete_Push_Pull
                 return false;
             if (!DeliveryRoutes.FilterAndOutputPriorityList(selectedDay))
                 return false;
-            //if (!Delivery.FilterAndOutputPriorityList(selectedDay))
-            //    return false;
             //if (!ExcelConversions.OutputCustomerOrdersToExcel(selectedDay, GenSheets))
             //    return false;
-            //If all methods executed successfully, return true
             return true;
         }
 
@@ -142,13 +120,24 @@ namespace Delete_Push_Pull
         public static bool CheckCSV(string GenSheets)
         {
             if (!CSVFiles.OutputProductsToCSV(GenSheets))
-            {
                 return false;
-            }
-            else
-            {
-                return true;
-            }
+            return true;
+        }
+        
+        public static bool CheckProductionHelper(DayOfWeek selectedDay, string GenProd)
+        {
+            if (!ProductionHelp.ProductionHelperMain(selectedDay, GenProd))
+                return false;
+            
+            return true;
+        }
+
+        public static bool CheckDelviery(DayOfWeek selectedDay)
+        {
+            if (!Delivery.FilterAndOutputPriorityList(selectedDay))
+                return false; 
+
+            return true;
 
         }
     }

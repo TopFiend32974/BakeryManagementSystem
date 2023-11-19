@@ -1,7 +1,9 @@
 ﻿using Delete_Push_Pull.Properties;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Linq;
@@ -19,6 +21,7 @@ namespace Delete_Push_Pull
         }
         private void setting_Load_1(object sender, EventArgs e)
         {
+            //DirShow
             lblShowDir.Text = "Current Dir Selected: " + (string)Settings.Default["DeleteDir"];
             lblPush.Text = "Current Dir Selected: " + (string)Settings.Default["Local"];
             lblPull.Text = "Current Dir Selected: " + (string)Settings.Default["Cloud"];
@@ -26,7 +29,98 @@ namespace Delete_Push_Pull
             lblGenSheets.Text = "Current Dir Selected: " + (string)Settings.Default["GenSheets"];
             decimal ExcelFontSize = (decimal)Settings.Default["ExcelFontSize"];
             lblFontSizeDisplay.Text = ExcelFontSize.ToString();
+
+            
+
+
+            //// To get the DirectorySettings value
+            //StringCollection directorySettings = Properties.Settings.Default.DirectorySettings;
+
+            //// To update the DirectorySettings value
+            //Properties.Settings.Default.DirectorySettings = new StringCollection();
+            //Properties.Settings.Default.DirectorySettings.Add("your_directory_path_here");
+            //Properties.Settings.Default.Save();
+
+            //if (directorySettings != null)
+            //{
+            //    foreach (string directory in directorySettings)
+            //    {
+            //        // Split the directory into title and path
+            //        string[] parts = directory.Split('|');
+
+            //        if (parts.Length == 2)
+            //        {
+            //            string title = parts[0];
+            //            string path = parts[1];
+
+            //            // Display title and path in the list
+            //            DirShow.Items.Add($"{title}: {path}");
+            //        }
+            //        else
+            //        {
+            //            // Invalid format, just add the directory
+            //            DirShow.Items.Add(directory);
+            //        }
+            //    }
+            //}
         }
+
+
+
+        private void listBoxDirectories_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Handle the selection change
+            string selectedDirectory = DirShow.SelectedItem as string;
+
+            // You can do something with the selected directory here
+            MessageBox.Show($"Selected Directory: {selectedDirectory}");
+        }
+
+        private void btnAddDirectory_Click(object sender, EventArgs e)
+        {
+            // Add a new directory to the list and application settings
+            string newDirectory = PromptForDirectory();
+
+            if (!string.IsNullOrEmpty(newDirectory))
+            {
+                DirShow.Items.Add(newDirectory);
+
+                // Save the directory with title and path format
+                //Properties.Settings.Default.DirectorySettings.Add(newDirectory);
+                Properties.Settings.Default.Save();
+            }
+        }
+        private string PromptForDirectory()
+        {
+            using (var folderBrowserDialog = new FolderBrowserDialog())
+            {
+                if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+                {
+                    // Prompt for title
+                    string title = PromptForTitle();
+
+                    // Combine title and path with a separator
+                    return $"{title}|{folderBrowserDialog.SelectedPath}";
+                }
+            }
+
+            return null;
+        }
+        private string PromptForTitle()
+        {
+            using (var titleForm = new TitleForm())
+            {
+                if (titleForm.ShowDialog() == DialogResult.OK)
+                {
+                    return titleForm.Title;
+                }
+            }
+
+            return "Untitled"; // Default title if none provided
+        }
+
+
+
 
         private void btnChangeDeleteDir_Click(object sender, EventArgs e)
         {

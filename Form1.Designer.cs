@@ -46,6 +46,7 @@
             btnPrintSheets = new Button();
             btnSelectDay = new Button();
             lblDaySelected = new Label();
+            btnProductionHelper = new Button();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -162,7 +163,7 @@
             // 
             // btnGenGoogleSheets
             // 
-            btnGenGoogleSheets.Location = new Point(307, 359);
+            btnGenGoogleSheets.Location = new Point(398, 355);
             btnGenGoogleSheets.Name = "btnGenGoogleSheets";
             btnGenGoogleSheets.Size = new Size(167, 23);
             btnGenGoogleSheets.TabIndex = 19;
@@ -202,7 +203,7 @@
             // 
             // btnSelectDay
             // 
-            btnSelectDay.Location = new Point(515, 359);
+            btnSelectDay.Location = new Point(699, 69);
             btnSelectDay.Name = "btnSelectDay";
             btnSelectDay.Size = new Size(78, 23);
             btnSelectDay.TabIndex = 23;
@@ -213,18 +214,29 @@
             // lblDaySelected
             // 
             lblDaySelected.AutoSize = true;
-            lblDaySelected.Location = new Point(599, 363);
+            lblDaySelected.Location = new Point(674, 51);
             lblDaySelected.Name = "lblDaySelected";
-            lblDaySelected.Size = new Size(77, 15);
+            lblDaySelected.Size = new Size(126, 15);
             lblDaySelected.TabIndex = 24;
-            lblDaySelected.Text = "Current Day is: " + MainClass.GetDay();
+            lblDaySelected.Text = "Current Day is: Sunday";
             lblDaySelected.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // btnProductionHelper
+            // 
+            btnProductionHelper.Location = new Point(225, 355);
+            btnProductionHelper.Name = "btnProductionHelper";
+            btnProductionHelper.Size = new Size(167, 23);
+            btnProductionHelper.TabIndex = 25;
+            btnProductionHelper.Text = "Generate Production Helper";
+            btnProductionHelper.UseVisualStyleBackColor = true;
+            btnProductionHelper.Click += btnProductionHelper_Click;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(btnProductionHelper);
             Controls.Add(lblDaySelected);
             Controls.Add(btnSelectDay);
             Controls.Add(btnPrintSheets);
@@ -269,5 +281,6 @@
         private Button btnPrintSheets;
         private Button btnSelectDay;
         public Label lblDaySelected;
+        private Button btnProductionHelper;
     }
 }

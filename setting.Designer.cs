@@ -41,6 +41,7 @@
             btnExcelFontChange = new Button();
             lblFontSizeDisplay = new Label();
             numInputExcelFont = new NumericUpDown();
+            DirShow = new ListBox();
             ((System.ComponentModel.ISupportInitialize)numInputExcelFont).BeginInit();
             SuspendLayout();
             // 
@@ -165,11 +166,21 @@
             numInputExcelFont.Size = new Size(120, 23);
             numInputExcelFont.TabIndex = 31;
             // 
+            // DirShow
+            // 
+            DirShow.FormattingEnabled = true;
+            DirShow.ItemHeight = 15;
+            DirShow.Location = new Point(105, 279);
+            DirShow.Name = "DirShow";
+            DirShow.Size = new Size(120, 94);
+            DirShow.TabIndex = 32;
+            // 
             // setting
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(DirShow);
             Controls.Add(numInputExcelFont);
             Controls.Add(lblFontSizeDisplay);
             Controls.Add(btnExcelFontChange);
@@ -206,5 +217,6 @@
         private Button btnExcelFontChange;
         private Label lblFontSizeDisplay;
         private NumericUpDown numInputExcelFont;
+        private ListBox DirShow;
     }
 }

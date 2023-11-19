@@ -8,6 +8,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System.Collections.Specialized;
+
 namespace Delete_Push_Pull.Properties {
     
     
@@ -16,7 +18,8 @@ namespace Delete_Push_Pull.Properties {
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
-        
+       
+
         public static Settings Default {
             get {
                 return defaultInstance;
@@ -92,6 +95,30 @@ namespace Delete_Push_Pull.Properties {
             }
             set {
                 this["ExcelFontSize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ProductionHelpDir {
+            get {
+                return ((string)(this["ProductionHelpDir"]));
+            }
+            set {
+                this["ProductionHelpDir"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string @null {
+            get {
+                return ((string)(this["null"]));
+            }
+            set {
+                this["null"] = value;
             }
         }
     }

@@ -302,6 +302,11 @@ namespace Delete_Push_Pull
         {
             MainClass.LoadMainClass();
         }
+        private void btnProductionHelper_Click(object sender, EventArgs e)
+        {
+            MainClass.LoadProductionHelper();
+
+        }
 
 
         private void btnOpenGoogleDir_Click(object sender, EventArgs e)
@@ -326,6 +331,8 @@ namespace Delete_Push_Pull
             lblDaySelected.Text = "Curreny Day Selected is: " + selectedDay;
 
         }
+
+       
     }
 
 
