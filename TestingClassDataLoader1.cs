@@ -470,7 +470,7 @@ namespace Delete_Push_Pull
 
         public static string GetSoftwareVersion()
         {
-            return "1.0.0";
+            return "1.2.1";
         }
     }
 
@@ -556,6 +556,76 @@ namespace Delete_Push_Pull
         {
             Quantity += value;
         }
+    }
+
+    class testingGrounds
+    {
+        public static void GenProductsTotal(DayOfWeek selectedDay)
+        {
+            string localDir = (string)Settings.Default["Local"];
+            string GenSheets = (string)Settings.Default["GenSheets"];
+            string filePath = Path.Combine(localDir, "PRODUCTS_TOTAL.txt");
+            string excelFilePath = Path.Combine(GenSheets, $"ProductionHelper_{selectedDay}.xlsx");
+
+
+            // Clear the text file
+            File.WriteAllText(filePath, string.Empty);
+
+            // Get orders from customers for the selected day
+            List<Order> orders = Data.GetInstance().GetOrders(selectedDay);
+
+            // Dictionary to store the total quantity for each product
+            Dictionary<int, int> productTotals = new Dictionary<int, int>();
+
+            // Iterate through all products and initialize total quantity to 0
+            foreach (Product product in Data.GetInstance().GetProducts())
+            {
+                productTotals.Add(product.ProductId, 0);
+            }
+
+            // Iterate through orders and update product totals for the selected day
+            foreach (Order order in orders)
+            {
+                foreach (OrderItem orderItem in order.OrderItems)
+                {
+                    int productId = orderItem.Product.ProductId;
+
+                    // Update existing total only for the selected day
+                    productTotals[productId] += orderItem.Quantity;
+                }
+            }
+
+            // Write product totals to the text file for products ordered on the selected day
+            try
+            {
+                using (StreamWriter writer = new StreamWriter(filePath))
+                {
+                    foreach (var productTotal in productTotals)
+                    {
+                        // Get product details using FirstOrDefault
+                        Product product = Data.GetInstance().GetProducts().FirstOrDefault(p => p.ProductId == productTotal.Key);
+
+                        // Write product details and total quantity to the file for products ordered on the selected day
+                        if (productTotal.Value > 0)
+                        {
+                            writer.WriteLine($"{product.ProductId} {product.ProductName} {productTotal.Value}");
+                        }
+                    }
+                }
+
+                //ProductionHelp.ConvertTextToExcel(filePath, excelFilePath);
+                // Open file in notepad
+                System.Diagnostics.Process.Start("notepad.exe", filePath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error writing to PRODUCTS_TOTAL.txt: {ex.Message}");
+                // or log the error to a log file
+            }
+        }
+
+
+
     }
 
 }

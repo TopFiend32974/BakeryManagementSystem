@@ -42,6 +42,8 @@
             lblFontSizeDisplay = new Label();
             numInputExcelFont = new NumericUpDown();
             DirShow = new ListBox();
+            btnChangeProdDir = new Button();
+            lblProdDir = new Label();
             ((System.ComponentModel.ISupportInitialize)numInputExcelFont).BeginInit();
             SuspendLayout();
             // 
@@ -175,11 +177,32 @@
             DirShow.Size = new Size(120, 94);
             DirShow.TabIndex = 32;
             // 
+            // btnChangeProdDir
+            // 
+            btnChangeProdDir.Location = new Point(25, 190);
+            btnChangeProdDir.Name = "btnChangeProdDir";
+            btnChangeProdDir.Size = new Size(176, 23);
+            btnChangeProdDir.TabIndex = 33;
+            btnChangeProdDir.Text = "Change Production Folder Dir";
+            btnChangeProdDir.UseVisualStyleBackColor = true;
+            btnChangeProdDir.Click += btnChangeProdDir_Click;
+            // 
+            // lblProdDir
+            // 
+            lblProdDir.AutoSize = true;
+            lblProdDir.Location = new Point(207, 194);
+            lblProdDir.Name = "lblProdDir";
+            lblProdDir.Size = new Size(22, 15);
+            lblProdDir.TabIndex = 34;
+            lblProdDir.Text = "Dir";
+            // 
             // setting
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(lblProdDir);
+            Controls.Add(btnChangeProdDir);
             Controls.Add(DirShow);
             Controls.Add(numInputExcelFont);
             Controls.Add(lblFontSizeDisplay);
@@ -218,5 +241,7 @@
         private Label lblFontSizeDisplay;
         private NumericUpDown numInputExcelFont;
         private ListBox DirShow;
+        private Button btnChangeProdDir;
+        private Label lblProdDir;
     }
 }

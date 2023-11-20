@@ -1,4 +1,5 @@
-﻿using Microsoft.Office.Interop.Excel;
+﻿using Delete_Push_Pull.Properties;
+using Microsoft.Office.Interop.Excel;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -17,12 +18,118 @@ namespace Delete_Push_Pull
         {
             if (!GenPastyHelper(selectedDay, GenProd))            
                 return false;
-            //if (!GenTrayHelper(selectedDay, GenSheets))
-            //    return false;
-                        
-             return true;
+            if (!GenProductsTotal(selectedDay, GenProd))
+                return false;
+
+            return true;
         }
-       
+
+        public static bool GenProductsTotal(DayOfWeek selectedDay, string localDir)
+        {
+            try
+            {
+                //string localDir = (string)Settings.Default["Local"];
+                string excelFilePath = Path.Combine(localDir, $"ProductionHelper_{selectedDay}.xlsx");
+
+                // Get orders from customers for the selected day
+                List<Order> orders = Data.GetInstance().GetOrders(selectedDay);
+
+                // Dictionary to store the total quantity for each product
+                Dictionary<int, int> productTotals = new Dictionary<int, int>();
+
+                // Iterate through all products and initialize total quantity to 0
+                foreach (Product product in Data.GetInstance().GetProducts())
+                {
+                    productTotals.Add(product.ProductId, 0);
+                }
+
+                // Iterate through orders and update product totals for the selected day
+                foreach (Order order in orders)
+                {
+                    foreach (OrderItem orderItem in order.OrderItems)
+                    {
+                        int productId = orderItem.Product.ProductId;
+
+                        // Update existing total only for the selected day
+                        productTotals[productId] += orderItem.Quantity;
+                    }
+                }
+
+                // Write product totals to the Excel file for products ordered on the selected day
+                try
+                {
+                    using (var package = new ExcelPackage(new FileInfo(excelFilePath)))
+                    {
+                        ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("ProductTotals");
+
+                        // Write header
+                        worksheet.Cells[1, 1].Value = "ID";
+                        worksheet.Cells[1, 2].Value = "Product Name";
+                        worksheet.Cells[1, 3].Value = "Total";
+                        worksheet.Cells[1, 4].Value = "Trays";
+
+                        // Write data to Excel sheet
+                        int row = 2;
+                        List<float> BapstoTray = new List<float> { 185, /* add other ProductIds as needed */ };
+                        List<float> FrisbytoTray = new List<float> { 179, /* add other ProductIds as needed */ };
+
+                        foreach (var productTotal in productTotals)
+                        {
+                            // Get product details using FirstOrDefault
+                            Product product = Data.GetInstance().GetProducts().FirstOrDefault(p => p.ProductId == productTotal.Key);
+
+                            // Write product details and total quantity to the Excel sheet for products ordered on the selected day
+                            if (productTotal.Value > 0)
+                            {
+                                worksheet.Cells[row, 1].Value = product.ProductId;
+                                worksheet.Cells[row, 2].Value = product.ProductName;
+                                worksheet.Cells[row, 3].Value = productTotal.Value;
+
+                                // Check if the current product's ProductId is in the special list
+                                if (BapstoTray.Contains(product.ProductId))
+                                {
+                                    int trays = productTotal.Value / 24;
+                                    int remainder = productTotal.Value % 24;
+
+                                    worksheet.Cells[row, 4].Value = @$"{trays}T + {remainder} Baps";
+                                    //worksheet.Cells[row, 5].Value = remainder;
+                                }
+                                else if(FrisbytoTray.Contains(product.ProductId)){
+                                    int trays = productTotal.Value / 24;
+                                    int remainder = productTotal.Value % 24;
+
+                                    worksheet.Cells[row, 4].Value = @$"{trays}T + {remainder} Frisbees";
+                                }
+
+                                row++;
+                            }
+                        }
+
+
+                        ExcelConversions.AdjustExcelPrint(worksheet);
+
+                        package.SaveAs(new FileInfo(excelFilePath));
+                    }
+
+                    // Open folder location in File Explorer
+                    System.Diagnostics.Process.Start("explorer.exe", $"/select,\"{excelFilePath}\"");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error processing data: {ex.Message}");
+                    // or log the error to a log file
+                }
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+           
+        }
+
+
         public static bool GenPastyHelper(DayOfWeek selectedDay, string GenProd)
         {
             try
@@ -234,7 +341,7 @@ namespace Delete_Push_Pull
 
 
 
-
+                    //ExcelConversions.AdjustExcelPrint(worksheet);
                     package.SaveAs(new FileInfo(outputFilePath));
                 }
 

@@ -17,11 +17,22 @@ namespace Delete_Push_Pull
             {
                 MessageBox.Show("Local Directory not set correctly. Select Local Dir and Restart before continue");
             }
-            MainClass.SetDay();            
+            MainClass.SetDay();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             ApplicationConfiguration.Initialize();
-            Application.Run(new Form1());
+            // Get the day from MainClass
+            string day = MainClass.GetDay();
+
+            // Create an instance of Form1
+            Form1 form = new Form1();
+
+            // Set the text property of the label
+            form.lblDaySelected.Text = "Day Selected: "+ day;
+
+            // Show the form
+            Application.Run(form);
+
         }
     }
 }

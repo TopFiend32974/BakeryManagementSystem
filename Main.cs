@@ -19,9 +19,12 @@ namespace Delete_Push_Pull
         {
             return selectedDayInstance.SelectedDay.ToString();
         }
+
         public static void SetDay()
         {
             selectedDayInstance.SelectedDay = DateTime.Now.DayOfWeek;
+            // You might want to print or log the selected day for debugging purposes
+            //MessageBox.Show($"Selected day set to: {selectedDayInstance.SelectedDay}");
         }
 
         [STAThread]
@@ -30,18 +33,19 @@ namespace Delete_Push_Pull
 
             string GenSheetsDir = (string)Settings.Default["GenSheets"];
             DayOfWeek selectedDay = selectedDayInstance.SelectedDay;
-            DeleteSection.DeleteFiles(GenSheetsDir);
+            //DeleteSection.DeleteFiles(GenSheetsDir);
 
-            //DataValidation.CheckCSV(GenSheetsDir);
-            DataValidation.CheckExcel(selectedDay, GenSheetsDir);
-            DataValidation.CheckDelviery(selectedDay);  
+            ////DataValidation.CheckCSV(GenSheetsDir);
+            //DataValidation.CheckExcel(selectedDay, GenSheetsDir);
+            //DataValidation.CheckDelviery(selectedDay);
+            testingGrounds.GenProductsTotal(selectedDay);
             
         }
         public static void LoadProductionHelper()
         {
             string GenProductionDir = (string)Settings.Default["ProductionHelpDir"];
             DayOfWeek selectedDay = selectedDayInstance.SelectedDay;
-            DeleteSection.DeleteFiles(GenProductionDir);
+            //DeleteSection.DeleteFiles(GenProductionDir);
 
             DataValidation.CheckProductionHelper(selectedDay, GenProductionDir);
         }

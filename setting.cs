@@ -30,7 +30,7 @@ namespace Delete_Push_Pull
             decimal ExcelFontSize = (decimal)Settings.Default["ExcelFontSize"];
             lblFontSizeDisplay.Text = ExcelFontSize.ToString();
 
-            
+
 
 
             //// To get the DirectorySettings value
@@ -223,6 +223,24 @@ namespace Delete_Push_Pull
             Settings.Default["ExcelFontSize"] = numInputExcelFont.Value;
             Settings.Default.Save();
             lblFontSizeDisplay.Text = ExcelFontSize.ToString();
+        }
+
+        private void btnChangeProdDir_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog diag = new FolderBrowserDialog();
+            OpenFileDialog ofd = new OpenFileDialog();
+
+
+            if (diag.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                Settings.Default["ProductionHelpDir"] = diag.SelectedPath.ToString();
+                Settings.Default.Save();
+            }
+            else
+            {
+                Settings.Default["ProductionHelpDir"] = "";
+            }
+            lblProdDir.Text = "Current Dir Selected: " + (string)Settings.Default["ProductionHelpDir"];
         }
     }
 }
