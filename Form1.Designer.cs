@@ -203,7 +203,7 @@
             // 
             // btnSelectDay
             // 
-            btnSelectDay.Location = new Point(699, 69);
+            btnSelectDay.Location = new Point(673, 69);
             btnSelectDay.Name = "btnSelectDay";
             btnSelectDay.Size = new Size(78, 23);
             btnSelectDay.TabIndex = 23;
@@ -214,7 +214,7 @@
             // lblDaySelected
             // 
             lblDaySelected.AutoSize = true;
-            lblDaySelected.Location = new Point(674, 51);
+            lblDaySelected.Location = new Point(651, 51);
             lblDaySelected.Name = "lblDaySelected";
             lblDaySelected.Size = new Size(126, 15);
             lblDaySelected.TabIndex = 24;

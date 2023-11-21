@@ -70,8 +70,25 @@ namespace Delete_Push_Pull
 
                         // Write data to Excel sheet
                         int row = 2;
-                        List<float> BapstoTray = new List<float> { 185, /* add other ProductIds as needed */ };
-                        List<float> FrisbytoTray = new List<float> { 179, /* add other ProductIds as needed */ };
+                        List<float> i24toTray = new List<float> { 185, 172 };
+                        List<float> i15toTray = new List<float> { 168, 179, 199 };
+                        List<float> i30toTray = new List<float> { 187 };
+                        List<float> i5toTray = new List<float> { 215 };
+                        List<float> X4ToTray = new List<float> { 180, 183, 184 };
+                        List<float> X6ToTray = new List<float> { 214 };
+                        List<float> SausageToTray = new List<float> { 380 };
+                        List<float> XaintsToTray = new List<float> { 311 };
+
+                        List<float> Torpedo110GCuts = new List<float> { 142, 198 };
+                        List<float> SconeCuts = new List<float> { 260, 265 };
+
+                        List<float> X4StrapsSQ = new List<float> { 5, 73, 113, 134 };
+                        List<float> X5StrapsSM = new List<float> { 12, 86, 118, 138 };
+                        
+
+                        int x4toTrays = 0;
+                        int bapsTotal = 0;
+                        int FrisbeesTotal = 0;
 
                         foreach (var productTotal in productTotals)
                         {
@@ -85,28 +102,104 @@ namespace Delete_Push_Pull
                                 worksheet.Cells[row, 2].Value = product.ProductName;
                                 worksheet.Cells[row, 3].Value = productTotal.Value;
 
+                                if (X4ToTray.Contains(product.ProductId))
+                                {
+                                    x4toTrays += productTotal.Value * 4;
+                                    int trays = (productTotal.Value * 4) / 24;
+                                    int remainder = (productTotal.Value * 4) % 24;
+                                    worksheet.Cells[row, 4].Value = @$"{trays}T + {remainder} Baps";
+                                }
                                 // Check if the current product's ProductId is in the special list
-                                if (BapstoTray.Contains(product.ProductId))
+                                if (i24toTray.Contains(product.ProductId))
+                                {                                   
+                                    bapsTotal += productTotal.Value;
+                                    int Total = productTotal.Value;
+                                    int trays =  Total / 24;
+                                    int remainder = Total % 24;
+                                    worksheet.Cells[row, 4].Value = @$"{trays}T + {remainder} Baps";
+                                }                                
+                                else if(i15toTray.Contains(product.ProductId)){
+                                    FrisbeesTotal += productTotal.Value;
+                                    int trays = productTotal.Value / 15;
+                                    int remainder = productTotal.Value % 15;
+                                    worksheet.Cells[row, 4].Value = @$"{trays}T + {remainder} Frisbees";
+                                }
+                                else if (i30toTray.Contains(product.ProductId))
+                                {
+                                    int trays = productTotal.Value / 30;
+                                    int remainder = productTotal.Value % 30;
+                                    worksheet.Cells[row, 4].Value = @$"{trays}T + {remainder} Splits";
+                                }
+                                else if (X6ToTray.Contains(product.ProductId))
+                                {
+                                    int trays = (productTotal.Value * 6) / 30;
+                                    int remainder = (productTotal.Value * 6) % 30;
+                                    worksheet.Cells[row, 4].Value = @$"{trays}T + {remainder} Finger Rolls";
+                                }
+                                else if (SausageToTray.Contains(product.ProductId))
                                 {
                                     int trays = productTotal.Value / 24;
                                     int remainder = productTotal.Value % 24;
-
-                                    worksheet.Cells[row, 4].Value = @$"{trays}T + {remainder} Baps";
-                                    //worksheet.Cells[row, 5].Value = remainder;
+                                    worksheet.Cells[row, 4].Value = @$"{trays}T + {remainder} Sauages";
                                 }
-                                else if(FrisbytoTray.Contains(product.ProductId)){
-                                    int trays = productTotal.Value / 24;
-                                    int remainder = productTotal.Value % 24;
-
-                                    worksheet.Cells[row, 4].Value = @$"{trays}T + {remainder} Frisbees";
+                                else if (Torpedo110GCuts.Contains(product.ProductId))
+                                {
+                                    int Cuts = productTotal.Value / 30;
+                                    int remainder = productTotal.Value % 30;
+                                    worksheet.Cells[row, 4].Value = @$"{Cuts}Cuts + {remainder} Torpedos (3.3KG)";
                                 }
+                                else if (SconeCuts.Contains(product.ProductId))
+                                {
+                                    int Cuts = productTotal.Value / 37;
+                                    int remainder = productTotal.Value % 37;
+                                    worksheet.Cells[row, 4].Value = @$"{Cuts}Cuts + {remainder} Scones P:(3.2KG) F:(3.7KG)";
+                                }
+                                else if (i5toTray.Contains(product.ProductId))
+                                {
+                                    int trays = productTotal.Value / 5;
+                                    int remainder = productTotal.Value % 5;
+                                    worksheet.Cells[row, 4].Value = @$"{trays}T + {remainder} Sticks";
+                                }
+                                else if (XaintsToTray.Contains(product.ProductId))
+                                {
+                                    int trays = productTotal.Value / 5;
+                                    int remainder = (productTotal.Value * 4) % 5;
+                                    worksheet.Cells[row, 4].Value = @$"{trays}T + {remainder} Crossiants";
+                                }else if (X4StrapsSQ.Contains(product.ProductId))
+                                {
+                                    int trays = productTotal.Value / 4;
+                                    int remainder = productTotal.Value % 4;
+                                    worksheet.Cells[row, 4].Value = @$"{trays}Straps + {remainder} SQ";
+                                }else if (X5StrapsSM.Contains(product.ProductId))
+                                {
+                                    int trays = productTotal.Value / 5;
+                                    int remainder = productTotal.Value % 5;
+                                    worksheet.Cells[row, 4].Value = @$"{trays}Staps + {remainder} SM";
+                                }
+
+                                //int Total = (productTotal.Value + x4toTrays);
+                                //int trays = Total / 24;
+                                //int remainder = Total % 24;
+                                //worksheet.Cells[row, 4].Value = @$"{trays}T + {remainder} Baps";
 
                                 row++;
                             }
                         }
+                        row += 2;
+                        worksheet.Cells[row, 1].Value = "Product Name";
+                        worksheet.Cells[row, 2].Value = "Total Product";
+                        worksheet.Cells[row, 3].Value = "Total Trays";
+                        row++;
+                        worksheet.Cells[row, 1].Value = "Total Baps";
+                        worksheet.Cells[row, 2].Value = bapsTotal + x4toTrays;
+                        worksheet.Cells[row, 3].Value = (bapsTotal + x4toTrays) / 24;
+                        row++;
+                        worksheet.Cells[row, 1].Value = "Total Frisbees";
+                        worksheet.Cells[row, 2].Value = FrisbeesTotal;
+                        worksheet.Cells[row, 3].Value = FrisbeesTotal / 15;
 
 
-                        ExcelConversions.AdjustExcelPrint(worksheet);
+                        ExcelConversions.AdjustExcelPrintPortrait(worksheet);
 
                         package.SaveAs(new FileInfo(excelFilePath));
                     }

@@ -39,7 +39,9 @@ namespace Delete_Push_Pull
             //DataValidation.CheckExcel(selectedDay, GenSheetsDir);
             //DataValidation.CheckDelviery(selectedDay);
             testingGrounds.GenProductsTotal(selectedDay);
-            
+            DataValidation.CheckCSV(GenSheetsDir);
+
+
         }
         public static void LoadProductionHelper()
         {

@@ -319,20 +319,16 @@ namespace Delete_Push_Pull
             SheetSelectionForm print = new SheetSelectionForm();
             print.Show();
         }
-
-
-
-
         private void btnSelectDay_Click(object sender, EventArgs e)
         {
             MainClass.ShowDaySelectionDialog();
             //return a day value for lbl 
             string selectedDay = MainClass.GetDay();
-            lblDaySelected.Text = "Curreny Day Selected is: " + selectedDay;
+            lblDaySelected.Text = "Day Selected: " + selectedDay;
 
         }
 
-       
+
     }
 
 

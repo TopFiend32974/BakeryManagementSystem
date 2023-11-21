@@ -951,6 +951,35 @@ namespace Delete_Push_Pull
 
 
         }
+        public static void AdjustExcelPrintPortrait(ExcelWorksheet worksheet)
+        {
+            string cellRange = "A1:AQ200"; // Change this to the range you need
+
+            // Set the font size for the specified cell range
+            using (var cells = worksheet.Cells[cellRange])
+            {
+                cells.Style.Font.Size = (float)(decimal)Settings.Default["ExcelFontSize"];
+                worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns(0);
+
+            }
+
+            // Set narrower margins
+            worksheet.PrinterSettings.LeftMargin = 0.25m;  
+            worksheet.PrinterSettings.RightMargin = 0.25m;
+            worksheet.PrinterSettings.TopMargin = 0.25m;
+            worksheet.PrinterSettings.BottomMargin = 0.25m;
+
+            // Show gridlines for printing
+            worksheet.PrinterSettings.ShowGridLines = true;
+
+            // Rows to repeat at the top
+            worksheet.PrinterSettings.RepeatRows = worksheet.Cells["1:1"];
+
+            // Columns to repeat at the left
+            worksheet.PrinterSettings.RepeatColumns = worksheet.Cells["A:B"];
+
+
+        }
 
 
 
