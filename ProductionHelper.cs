@@ -31,6 +31,7 @@ namespace Delete_Push_Pull
                 string excelFilePath = Path.Combine(localDir, $"ProductionHelper_{selectedDay}.xlsx");
                 List<Order> orders = Data.GetInstance().GetOrders(selectedDay);
                 Dictionary<int, int> productTotals = new Dictionary<int, int>();
+                
                 foreach (Product product in Data.GetInstance().GetProducts())
                 {
                     productTotals.Add(product.ProductId, 0);
@@ -47,6 +48,7 @@ namespace Delete_Push_Pull
                 {
                     using (var package = new ExcelPackage(new FileInfo(excelFilePath)))
                     {
+                        int halfDivider = 2;
                         ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("ProductTotals");
                         worksheet.Cells[1, 1].Value = "ID";
                         worksheet.Cells[1, 2].Value = "Product Name";
@@ -68,6 +70,7 @@ namespace Delete_Push_Pull
                         int x4toTrays = 0;
                         int bapsTotal = 0;
                         int FrisbeesTotal = 0;
+                        int WhiteBapsTotal = 0;
                         foreach (var productTotal in productTotals)
                         {                           
                             Product product = Data.GetInstance().GetProducts().FirstOrDefault(p => p.ProductId == productTotal.Key);                            
@@ -79,76 +82,57 @@ namespace Delete_Push_Pull
 
                                 if (X4ToTray.Contains(product.ProductId))
                                 {
-                                    x4toTrays += productTotal.Value * 4;
-                                    int trays = (productTotal.Value * 4) / 24;
-                                    int remainder = (productTotal.Value * 4) % 24;
-                                    worksheet.Cells[row, 4].Value = @$"{trays}T + {remainder} Baps";
+                                    x4toTrays += productTotal.Value * 4;                                    
+                                    worksheet.Cells[row, 4].Value = AdjustEquation((productTotal.Value * 4), 24, halfDivider);
                                 }
                                 if (i24toTray.Contains(product.ProductId))
-                                {                                   
+                                {
+                                    if (product.ProductId == 185)
+                                    {
+                                        WhiteBapsTotal += productTotal.Value;
+                                    }
                                     bapsTotal += productTotal.Value;
-                                    int Total = productTotal.Value;
-                                    int trays =  Total / 24;
-                                    int remainder = Total % 24;
-                                    worksheet.Cells[row, 4].Value = @$"{trays}T + {remainder} Baps";
+                                    worksheet.Cells[row, 4].Value = AdjustEquation(productTotal.Value, 24, halfDivider);
                                 }                                
                                 else if(i15toTray.Contains(product.ProductId)){
                                     FrisbeesTotal += productTotal.Value;
-                                    int trays = productTotal.Value / 15;
-                                    int remainder = productTotal.Value % 15;
-                                    worksheet.Cells[row, 4].Value = @$"{trays}T + {remainder} Frisbees";
+                                    worksheet.Cells[row, 4].Value = AdjustEquation(productTotal.Value, 15, halfDivider);
                                 }
                                 else if (i30toTray.Contains(product.ProductId))
                                 {
-                                    int trays = productTotal.Value / 30;
-                                    int remainder = productTotal.Value % 30;
-                                    worksheet.Cells[row, 4].Value = @$"{trays}T + {remainder} Splits";
+                                    worksheet.Cells[row, 4].Value = AdjustEquation(productTotal.Value, 30, halfDivider);
                                 }
                                 else if (X6ToTray.Contains(product.ProductId))
                                 {
-                                    int trays = (productTotal.Value * 6) / 30;
-                                    int remainder = (productTotal.Value * 6) % 30;
-                                    worksheet.Cells[row, 4].Value = @$"{trays}T + {remainder} Finger Rolls";
+                                    worksheet.Cells[row, 4].Value = AdjustEquation((productTotal.Value * 6), 30, halfDivider);
                                 }
                                 else if (SausageToTray.Contains(product.ProductId))
                                 {
-                                    int trays = productTotal.Value / 24;
-                                    int remainder = productTotal.Value % 24;
-                                    worksheet.Cells[row, 4].Value = @$"{trays}T + {remainder} Sauages";
+                                    worksheet.Cells[row, 4].Value = AdjustEquation(productTotal.Value, 24, halfDivider);
                                 }
                                 else if (Torpedo110GCuts.Contains(product.ProductId))
                                 {
-                                    int Cuts = productTotal.Value / 30;
-                                    int remainder = productTotal.Value % 30;
-                                    worksheet.Cells[row, 4].Value = @$"{Cuts}Cuts + {remainder} Torpedos (3.3KG)";
+                                    worksheet.Cells[row, 4].Value = AdjustEquationScones(productTotal.Value, 30, halfDivider);
                                 }
                                 else if (SconeCuts.Contains(product.ProductId))
                                 {
-                                    int Cuts = productTotal.Value / 37;
-                                    int remainder = productTotal.Value % 37;
-                                    worksheet.Cells[row, 4].Value = @$"{Cuts}Cuts + {remainder} Scones P:(3.2KG) F:(3.7KG)";
+                                    worksheet.Cells[row, 4].Value = AdjustEquationScones(productTotal.Value, 37, halfDivider);
                                 }
                                 else if (i5toTray.Contains(product.ProductId))
-                                {
-                                    int trays = productTotal.Value / 5;
-                                    int remainder = productTotal.Value % 5;
-                                    worksheet.Cells[row, 4].Value = @$"{trays}T + {remainder} Sticks";
+                                {                                   
+                                    worksheet.Cells[row, 4].Value = AdjustEquation(productTotal.Value, 5, halfDivider);
                                 }
                                 else if (XaintsToTray.Contains(product.ProductId))
+                                {                                    
+                                    worksheet.Cells[row, 4].Value = AdjustEquation(productTotal.Value, 5, halfDivider);
+                                }
+                                else if (X4StrapsSQ.Contains(product.ProductId))
+                                {                          
+                                    worksheet.Cells[row, 4].Value = AdjustEquationBread(productTotal.Value, 4, halfDivider);
+                                }
+                                else if (X5StrapsSM.Contains(product.ProductId))
                                 {
-                                    int trays = productTotal.Value / 5;
-                                    int remainder = (productTotal.Value * 4) % 5;
-                                    worksheet.Cells[row, 4].Value = @$"{trays}T + {remainder} Crossiants";
-                                }else if (X4StrapsSQ.Contains(product.ProductId))
-                                {
-                                    int trays = productTotal.Value / 4;
-                                    int remainder = productTotal.Value % 4;
-                                    worksheet.Cells[row, 4].Value = @$"{trays}Straps + {remainder} SQ";
-                                }else if (X5StrapsSM.Contains(product.ProductId))
-                                {
-                                    int trays = productTotal.Value / 5;
-                                    int remainder = productTotal.Value % 5;
-                                    worksheet.Cells[row, 4].Value = @$"{trays}Staps + {remainder} SM";
+                                    worksheet.Cells[row, 4].Value = AdjustEquationBread(productTotal.Value, 5, halfDivider);
                                 }
                                 row++;
                             }
@@ -156,15 +140,29 @@ namespace Delete_Push_Pull
                         row += 2;
                         worksheet.Cells[row, 1].Value = "Product Name";
                         worksheet.Cells[row, 2].Value = "Total Product";
-                        worksheet.Cells[row, 3].Value = "Total Trays";
+                        worksheet.Cells[row, 3].Value = "Aprox Trays";
                         row++;
-                        worksheet.Cells[row, 1].Value = "Total Baps";
-                        worksheet.Cells[row, 2].Value = bapsTotal + x4toTrays;
-                        worksheet.Cells[row, 3].Value = (bapsTotal + x4toTrays) / 24;
-                        row++;
-                        worksheet.Cells[row, 1].Value = "Total Frisbees";
-                        worksheet.Cells[row, 2].Value = FrisbeesTotal;
-                        worksheet.Cells[row, 3].Value = FrisbeesTotal / 15;
+                        if (bapsTotal + x4toTrays > 0)
+                        {
+                            worksheet.Cells[row, 1].Value = "Total Baps";
+                            worksheet.Cells[row, 2].Value = bapsTotal + x4toTrays;
+                            worksheet.Cells[row, 3].Value = Math.Ceiling(((double)bapsTotal + x4toTrays) / 24);
+                            row++;
+                        }
+                        if (FrisbeesTotal > 0)
+                        {
+                            worksheet.Cells[row, 1].Value = "Total Frisbees";
+                            worksheet.Cells[row, 2].Value = FrisbeesTotal;
+                            worksheet.Cells[row, 3].Value = Math.Ceiling((double)FrisbeesTotal / 15.0);
+                            row++;
+                        }
+                        if (WhiteBapsTotal + x4toTrays > 0)
+                        {
+                            worksheet.Cells[row, 1].Value = "Total White Bap";
+                            worksheet.Cells[row, 2].Value = WhiteBapsTotal + x4toTrays;
+                            worksheet.Cells[row, 3].Value = Math.Ceiling((double)(WhiteBapsTotal + x4toTrays) / 24.0);
+
+                        }
                         ExcelConversions.AdjustExcelPrintPortrait(worksheet);
                         package.SaveAs(new FileInfo(excelFilePath));
                     }
@@ -182,6 +180,110 @@ namespace Delete_Push_Pull
             }
            
         }
+
+        private static string AdjustEquation(int total, int divider, int halfDivider)
+        {
+            int trays = total / divider;
+            int remainder = total % divider;
+            int decider = divider / halfDivider;
+
+            // Check if remainder is greater than half of the divider
+            if (remainder > decider)
+            {
+                trays += 1;
+                remainder = divider - remainder;
+                return $"{trays}T - {remainder}";
+            }
+            else if (trays == 0)
+            {
+                return $"{remainder} individuals";
+            }
+            else if (remainder == 0)
+            {
+                return $"{trays}T";
+            }
+            else
+            {
+                return $"{trays}T + {remainder}";
+            }
+        }
+        private static string AdjustEquationBread(int total, int divider, int halfDivider)
+        {
+            int trays = total / divider;
+            int remainder = total % divider;
+            int decider = divider / halfDivider;
+
+            // Check if remainder is greater than half of the divider
+            if (remainder > decider)
+            {
+                trays += 1;
+                remainder = divider - remainder;
+                return $"{trays} Straps - {remainder}";
+            }
+            else if (trays == 0)
+            {
+                return $"{remainder} individuals";
+            }
+            else if (remainder == 0)
+            {
+                return $"{trays} Straps";
+            }
+            else
+            {
+                return $"{trays} Straps + {remainder}";
+            }
+        }
+        private static string AdjustEquationScones(int total, int divider, int halfDivider)
+        {
+            int trays = total / divider;
+            int remainder = total % divider;
+            int decider = divider / halfDivider;
+
+            // Check if remainder is greater than half of the divider
+            if (divider != 37)
+            {
+                if (remainder > decider)
+                {
+                    trays += 1;
+                    remainder = divider - remainder;
+                    return $"{trays} Cuts - {remainder} Torpedos (3.3KG)";
+                }
+                else if (trays == 0)
+                {
+                    return $"{remainder} individuals (110G)";
+                }
+                else if (remainder == 0)
+                {
+                    return $"{trays} Cuts (3.3KG)";
+                }
+                else
+                {
+                    return $"{trays} Cuts + {remainder} Torpedos (3.3KG)";
+                }
+            }
+            else
+            {
+                if (remainder > decider)
+                {
+                    trays += 1;
+                    remainder = divider - remainder;
+                    return $"{trays} Cuts - {remainder} Scones P:(3.2KG) F:(3.7KG)";
+                }
+                else if (trays == 0)
+                {
+                    return $"{remainder} Scones";
+                }
+                else if (remainder == 0)
+                {
+                    return $"{trays} Cuts";
+                }
+                else
+                {
+                    return $"{trays} Cuts + {remainder} Scones P:(3.2KG) F:(3.7KG)";
+                }
+            }
+        }
+
 
 
         public static bool GenPastyHelper(DayOfWeek selectedDay, string GenProd)
