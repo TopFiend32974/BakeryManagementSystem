@@ -558,6 +558,31 @@ namespace Delete_Push_Pull
         }
     }
 
+    class loadAllDAta
+    {
+        public static bool ResetData()
+        {
+
+            try
+            {
+                Data dataInstance = Data.GetInstance();
+                dataInstance.ClearAllData();
+                var dataLoader = new DataLoader("");
+
+                if (!dataLoader.LoadAllData())
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+    }
+
     class testingGrounds
     {
         public static void GenProductsTotal(DayOfWeek selectedDay)

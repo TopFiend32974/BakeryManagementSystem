@@ -148,16 +148,13 @@ namespace Delete_Push_Pull
             {
                 Settings.Default["Local"] = diag.SelectedPath.ToString();
                 Settings.Default.Save();
-
-                Data dataInstance = Data.GetInstance();
-                dataInstance.ClearAllData();
-                var dataLoader = new DataLoader("");
-
-                if (!dataLoader.LoadAllData())
-                {
-                    MessageBox.Show("Push Dir Updated. \n LoadAllData FAILED");
+                if (!loadAllDAta.ResetData()) {   
+                    MessageBox.Show("Error: Could not load data");
                 }
-                MessageBox.Show("Push Dir Updated. \n LoadAllData Loaded Successfully.");
+                else
+                {
+                    MessageBox.Show("Data Loaded");
+                }
 
             }
             else

@@ -47,6 +47,7 @@
             btnSelectDay = new Button();
             lblDaySelected = new Label();
             btnProductionHelper = new Button();
+            refreshDataLoaderToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -133,7 +134,7 @@
             // menuStrip1
             // 
             menuStrip1.ImageScalingSize = new Size(20, 20);
-            menuStrip1.Items.AddRange(new ToolStripItem[] { settingsToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { settingsToolStripMenuItem, refreshDataLoaderToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(800, 24);
@@ -231,6 +232,13 @@
             btnProductionHelper.UseVisualStyleBackColor = true;
             btnProductionHelper.Click += btnProductionHelper_Click;
             // 
+            // refreshDataLoaderToolStripMenuItem
+            // 
+            refreshDataLoaderToolStripMenuItem.Name = "refreshDataLoaderToolStripMenuItem";
+            refreshDataLoaderToolStripMenuItem.Size = new Size(121, 20);
+            refreshDataLoaderToolStripMenuItem.Text = "Refresh DataLoader";
+            refreshDataLoaderToolStripMenuItem.Click += refreshDataLoaderToolStripMenuItem_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -282,5 +290,6 @@
         private Button btnSelectDay;
         public Label lblDaySelected;
         private Button btnProductionHelper;
+        private ToolStripMenuItem refreshDataLoaderToolStripMenuItem;
     }
 }

@@ -317,7 +317,17 @@ namespace Delete_Push_Pull
             lblDaySelected.Text = "Day Selected: " + selectedDay;
         }
 
-
+        private void refreshDataLoaderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!loadAllDAta.ResetData())
+            {
+                MessageBox.Show("Error: Could not load data");
+            }
+            else
+            {
+                MessageBox.Show("Data Loaded");
+            }
+        }
     }
 
 
