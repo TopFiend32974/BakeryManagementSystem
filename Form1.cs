@@ -51,14 +51,10 @@ namespace Delete_Push_Pull
             }
 
         }
-
         private void btnOpenFile_Click(object sender, EventArgs e)
         {
             Process.Start("explorer.exe", (string)Settings.Default["DeleteDir"]);
         }
-
-
-
         private void btnPush_Click(object sender, EventArgs e)
         {
             DateTime tempDate = DateTime.Now;
@@ -295,9 +291,6 @@ namespace Delete_Push_Pull
 
 
         }
-
-
-
         private void btnGenGoogleSheetsActual_Click(object sender, EventArgs e)
         {
             MainClass.LoadMainClass();
@@ -307,13 +300,10 @@ namespace Delete_Push_Pull
             MainClass.LoadProductionHelper();
 
         }
-
-
         private void btnOpenGoogleDir_Click(object sender, EventArgs e)
         {
             Process.Start("explorer.exe", (string)Settings.Default["GenSheets"]);
         }
-
         private void btnPrintSheets_Click(object sender, EventArgs e)
         {
             SheetSelectionForm print = new SheetSelectionForm();
@@ -325,7 +315,6 @@ namespace Delete_Push_Pull
             //return a day value for lbl 
             string selectedDay = MainClass.GetDay();
             lblDaySelected.Text = "Day Selected: " + selectedDay;
-
         }
 
 

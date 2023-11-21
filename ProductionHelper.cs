@@ -28,47 +28,30 @@ namespace Delete_Push_Pull
         {
             try
             {
-                //string localDir = (string)Settings.Default["Local"];
                 string excelFilePath = Path.Combine(localDir, $"ProductionHelper_{selectedDay}.xlsx");
-
-                // Get orders from customers for the selected day
                 List<Order> orders = Data.GetInstance().GetOrders(selectedDay);
-
-                // Dictionary to store the total quantity for each product
                 Dictionary<int, int> productTotals = new Dictionary<int, int>();
-
-                // Iterate through all products and initialize total quantity to 0
                 foreach (Product product in Data.GetInstance().GetProducts())
                 {
                     productTotals.Add(product.ProductId, 0);
                 }
-
-                // Iterate through orders and update product totals for the selected day
                 foreach (Order order in orders)
                 {
                     foreach (OrderItem orderItem in order.OrderItems)
                     {
                         int productId = orderItem.Product.ProductId;
-
-                        // Update existing total only for the selected day
                         productTotals[productId] += orderItem.Quantity;
                     }
                 }
-
-                // Write product totals to the Excel file for products ordered on the selected day
                 try
                 {
                     using (var package = new ExcelPackage(new FileInfo(excelFilePath)))
                     {
                         ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("ProductTotals");
-
-                        // Write header
                         worksheet.Cells[1, 1].Value = "ID";
                         worksheet.Cells[1, 2].Value = "Product Name";
                         worksheet.Cells[1, 3].Value = "Total";
                         worksheet.Cells[1, 4].Value = "Trays";
-
-                        // Write data to Excel sheet
                         int row = 2;
                         List<float> i24toTray = new List<float> { 185, 172 };
                         List<float> i15toTray = new List<float> { 168, 179, 199 };
@@ -78,24 +61,16 @@ namespace Delete_Push_Pull
                         List<float> X6ToTray = new List<float> { 214 };
                         List<float> SausageToTray = new List<float> { 380 };
                         List<float> XaintsToTray = new List<float> { 311 };
-
                         List<float> Torpedo110GCuts = new List<float> { 142, 198 };
                         List<float> SconeCuts = new List<float> { 260, 265 };
-
                         List<float> X4StrapsSQ = new List<float> { 5, 73, 113, 134 };
                         List<float> X5StrapsSM = new List<float> { 12, 86, 118, 138 };
-                        
-
                         int x4toTrays = 0;
                         int bapsTotal = 0;
                         int FrisbeesTotal = 0;
-
                         foreach (var productTotal in productTotals)
-                        {
-                            // Get product details using FirstOrDefault
-                            Product product = Data.GetInstance().GetProducts().FirstOrDefault(p => p.ProductId == productTotal.Key);
-
-                            // Write product details and total quantity to the Excel sheet for products ordered on the selected day
+                        {                           
+                            Product product = Data.GetInstance().GetProducts().FirstOrDefault(p => p.ProductId == productTotal.Key);                            
                             if (productTotal.Value > 0)
                             {
                                 worksheet.Cells[row, 1].Value = product.ProductId;
@@ -109,7 +84,6 @@ namespace Delete_Push_Pull
                                     int remainder = (productTotal.Value * 4) % 24;
                                     worksheet.Cells[row, 4].Value = @$"{trays}T + {remainder} Baps";
                                 }
-                                // Check if the current product's ProductId is in the special list
                                 if (i24toTray.Contains(product.ProductId))
                                 {                                   
                                     bapsTotal += productTotal.Value;
@@ -176,12 +150,6 @@ namespace Delete_Push_Pull
                                     int remainder = productTotal.Value % 5;
                                     worksheet.Cells[row, 4].Value = @$"{trays}Staps + {remainder} SM";
                                 }
-
-                                //int Total = (productTotal.Value + x4toTrays);
-                                //int trays = Total / 24;
-                                //int remainder = Total % 24;
-                                //worksheet.Cells[row, 4].Value = @$"{trays}T + {remainder} Baps";
-
                                 row++;
                             }
                         }
@@ -197,20 +165,13 @@ namespace Delete_Push_Pull
                         worksheet.Cells[row, 1].Value = "Total Frisbees";
                         worksheet.Cells[row, 2].Value = FrisbeesTotal;
                         worksheet.Cells[row, 3].Value = FrisbeesTotal / 15;
-
-
                         ExcelConversions.AdjustExcelPrintPortrait(worksheet);
-
                         package.SaveAs(new FileInfo(excelFilePath));
                     }
-
-                    // Open folder location in File Explorer
-                    System.Diagnostics.Process.Start("explorer.exe", $"/select,\"{excelFilePath}\"");
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Error processing data: {ex.Message}");
-                    // or log the error to a log file
                 }
 
                 return true;
@@ -227,26 +188,18 @@ namespace Delete_Push_Pull
         {
             try
             {
-                // Specify the output Excel file path for the Pasty Helper report
                 string outputFilePath = GenProd + $@"\ProductionHelper_{selectedDay}.xlsx";
-
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-
                 using (var package = new ExcelPackage())
-                {
-                    
+                {                    
                     var worksheet = package.Workbook.Worksheets.Add("PastyHelper");
-
                     var ordersByDay = Data.GetInstance().GetOrders(selectedDay);
-
                     if (ordersByDay.Count > 0)
                     {
-                        // Create a header row
-                        worksheet.Cells["A1"].Value = "Product ID";
+                        worksheet.Cells["A1"].Value = "ID";
                         worksheet.Cells["B1"].Value = "Product Name";
-                        worksheet.Cells["C1"].Value = "Quantity";
-                        worksheet.Cells["D1"].Value = "Trays Required";
-
+                        worksheet.Cells["C1"].Value = "Qty";
+                        worksheet.Cells["D1"].Value = "Trays";
                         var uniqueProducts = ordersByDay.SelectMany(o => o.OrderItems.Select(oi => oi.Product))
                             .Distinct()
                             .OrderBy(p => p.ProductId)
@@ -254,24 +207,34 @@ namespace Delete_Push_Pull
 
                         int row = 2;
 
+                        List<float> Stilton = new List<float> { 373, 338};
+                        List<float> chickenbacon = new List<float> { 336, 369};
+                        List<float> chickenCurry = new List<float> { 339, 366};
+                        List<float> CheeseBacon = new List<float> { 335, 372};
+                        List<float> medCheeseBacon = new List<float> { 388, 372};
+                        List<float> medVeg = new List<float> { 400 };
                         int totalMedPastyQuantity = 0;
                         int totalCocktailPastyQuantity = 0;
                         int totalFarmersQuantity = 0;
                         int totalOtherQuantity = 0;
-                        int totalChickenQuantity = 0;  // New variable for chicken total
-                        int totalCheeseQuantity = 0;   // New variable for cheese total
-                        int totalVeganQuantity = 0;   // New variable for cheese total
-                        int totalSteakQuantity = 0;   // New variable for cheese total
-                        int totalMedCheeseQuantity = 0;   // New variable for cheese total
-                        int totalMedSteakQuantity = 0;   // New variable for cheese total
-
-                        int totalLargeCutQuantity = 0;   // New variable for cheese total
-                        int totalMedCutQuantity = 0;   // New variable for cheese total
-                        int totalCocktailCutQuantity = 0;   // New variable for cheese total
+                        int totalChickenQuantity = 0;  
+                        int totalCheeseQuantity = 0;   
+                        int totalVeganQuantity = 0;   
+                        int totalSteakQuantity = 0;   
+                        int totalMedCheeseQuantity = 0;   
+                        int totalMedSteakQuantity = 0;   
+                        int totalStilton = 0;
+                        int totalChickenBacon = 0;
+                        int totalChickenCurry = 0;
+                        int totalCheeseBacon = 0;
+                        int totalMedCheeseBacon = 0;
+                        int totalMedVeg = 0;
+                        int totalLargeCutQuantity = 0;   
+                        int totalMedCutQuantity = 0;   
+                        int totalCocktailCutQuantity = 0;   
 
                         foreach (var product in uniqueProducts)
-                        {
-                            // Check if the product is part bake, pasty, or cocktail
+                        {                       
                             if (PastyKeywords(product.ProductName))
                             {
                                 int totalQuantity = ordersByDay.SelectMany(o => o.OrderItems)
@@ -279,7 +242,6 @@ namespace Delete_Push_Pull
                                     .Sum(oi => oi.Quantity);
                                 if (totalQuantity > 0)
                                 {
-                                    // Calculate trays required based on the rules with decimals
                                     double traysRequired = 0;
                                     if (product.ProductName.ToLower().Contains("cocktail"))
                                     {
@@ -291,11 +253,19 @@ namespace Delete_Push_Pull
                                     {
                                         if (product.ProductName.ToLower().Contains("cheese"))
                                         {
+                                            if (medCheeseBacon.Contains(product.ProductId))
+                                            {
+                                                totalMedCheeseBacon += totalQuantity;
+                                            }                                            
                                             totalMedCheeseQuantity += totalQuantity;
                                         }
                                         else if (product.ProductName.ToLower().Contains("steak"))
                                         {
                                             totalMedSteakQuantity += totalQuantity;
+                                        }
+                                        else if (medVeg.Contains(product.ProductId))
+                                        {
+                                            totalMedVeg += totalQuantity;
                                         }
                                         traysRequired = totalQuantity / 20.0;
                                         totalMedPastyQuantity += totalQuantity;
@@ -310,35 +280,43 @@ namespace Delete_Push_Pull
                                             totalFarmersQuantity += totalQuantity;
                                         }
                                         else
-                                        {
-                                            // Check for "chick" or "chicken"
-                                            if (product.ProductName.ToLower().Contains("chick") ||
-                                                product.ProductName.ToLower().Contains("chicken"))
+                                        {                                          
+                                            if (product.ProductName.ToLower().Contains("chick"))
                                             {
+                                                if (chickenbacon.Contains(product.ProductId))
+                                                {
+                                                    totalChickenBacon += totalQuantity;
+                                                }
+                                                else if (chickenCurry.Contains(product.ProductId))
+                                                {
+                                                    totalChickenCurry += totalQuantity;
+                                                }
                                                 totalChickenQuantity += totalQuantity;
-                                            }
-                                            // Check for "cheese"
-                                            else if (product.ProductName.ToLower().Contains("cheese"))
-                                            {
-                                                totalCheeseQuantity += totalQuantity;
-                                            }
+                                            }                                            
                                             else if (product.ProductName.ToLower().Contains("steak"))
                                             {
+                                                if (Stilton.Contains(product.ProductId))
+                                                {
+                                                    totalStilton += totalQuantity;
+                                                }
                                                 totalSteakQuantity += totalQuantity;
-                                            }
-                                            else if (product.ProductName.ToLower().Contains("vegan") ||
-                                                product.ProductName.ToLower().Contains("veg"))
+                                            }                                            
+                                            else if (product.ProductName.ToLower().Contains("veg"))
                                             {
                                                 totalVeganQuantity += totalQuantity;
                                             }
-
+                                            else if (product.ProductName.ToLower().Contains("cheese"))
+                                            {                                                
+                                                if (CheeseBacon.Contains(product.ProductId))
+                                                {
+                                                    totalCheeseBacon += totalQuantity;
+                                                }
+                                                totalCheeseQuantity += totalQuantity;
+                                            }
                                             totalOtherQuantity += totalQuantity;
                                             totalLargeCutQuantity += totalQuantity;
                                         }
                                     }
-
-
-
                                     worksheet.Cells[row, 1].Value = product.ProductId;
                                     worksheet.Cells[row, 2].Value = product.ProductName;
                                     worksheet.Cells[row, 3].Value = totalQuantity;
@@ -350,99 +328,125 @@ namespace Delete_Push_Pull
 
 
                         ProductionHelp productionHelper = new ProductionHelp();
-
-                        // Your existing code to add data rows
-
-                        int startDataRow = 2; // The first row where data starts
-                        int endDataRow = row - 1; // The last row with data (excluding totals)
-                        string totalFormula = $"SUM(D{startDataRow}:D{endDataRow})"; // Excel formula to sum the values
-
-                        // Insert the total row
-                        row++;
-                        worksheet.Cells[row, 4].Value = "Trays Total:";
-                        row++;
+                        int startDataRow = 2;
+                        int endDataRow = row - 1;
+                        string totalFormula = $"SUM(D{startDataRow}:D{endDataRow})";                        
+                        worksheet.Cells[row, 3].Value = "Trays Total:";
                         worksheet.Cells[row, 4].Formula = totalFormula;
-                        worksheet.Cells[row, 4].Style.Numberformat.Format = "#,##0.00"; // Formatting if needed
-                        row++;
-                        worksheet.Cells[row, 2].Value = "Steaked Up Total";
-                        worksheet.Cells[row, 3].Value = totalSteakQuantity;
-                        row++;
-                        worksheet.Cells[row, 2].Value = "Chickened Up Total";
-                        worksheet.Cells[row, 3].Value = totalChickenQuantity;  // Display the total for "chick" and "chicken"
-                        row++;
-                        worksheet.Cells[row, 2].Value = "Cheesed Up Total";
-                        worksheet.Cells[row, 3].Value = totalCheeseQuantity;
-                        row++;
-                        worksheet.Cells[row, 2].Value = "Veganed Up Total";
-                        worksheet.Cells[row, 3].Value = totalVeganQuantity;
-                        row++;
-                        worksheet.Cells[row, 2].Value = "Med Cheesed Up Total";
-                        worksheet.Cells[row, 3].Value = totalMedCheeseQuantity;
-                        row++;
-                        worksheet.Cells[row, 2].Value = "Med Steak Up Total";
-                        worksheet.Cells[row, 3].Value = totalMedSteakQuantity;
+                        worksheet.Cells[row, 4].Style.Numberformat.Format = "#,##0.00"; 
                         row++;
                         row++;
-                        worksheet.InsertRow(row, 6);
+                        worksheet.Cells[row, 2].Value = "Base Total";
+                        worksheet.Cells[row, 3].Value = "QTY"; 
+                        worksheet.Cells[row, 4].Value = "Subcat QTY";
+                        row++;
+                        if (totalSteakQuantity > 0)
+                        {
+                            worksheet.Cells[row, 2].Value = "Steaked Up Total";
+                            worksheet.Cells[row, 3].Value = totalSteakQuantity;
+                            row++;
+                            worksheet.Cells[row, 3].Value = "Stilton:";
+                            worksheet.Cells[row, 4].Value = totalStilton;
+                            row++;
+                        }                         
+                        if (totalChickenQuantity > 0)
+                        {
+                            worksheet.Cells[row, 2].Value = "Chickened Up Total";
+                            worksheet.Cells[row, 3].Value = totalChickenQuantity;
+                            row++;
+                            worksheet.Cells[row, 3].Value = "ChickBacon:";
+                            worksheet.Cells[row, 4].Value = totalChickenBacon;
+                            row++;
+                            worksheet.Cells[row, 3].Value = "ChickCurry:";
+                            worksheet.Cells[row, 4].Value = totalChickenCurry;
+                            row++;
+
+                        }
+                        if (totalCheeseQuantity > 0)
+                        {
+                            worksheet.Cells[row, 2].Value = "Cheesed Up Total";
+                            worksheet.Cells[row, 3].Value = totalCheeseQuantity;
+                            row++;
+                            worksheet.Cells[row, 3].Value = "CheeseBacon:";
+                            worksheet.Cells[row, 4].Value = totalCheeseBacon;
+                            row++;
+                        }                        
+                        if (totalVeganQuantity > 0)
+                        {
+                            worksheet.Cells[row, 2].Value = "Veganed Up Total";
+                            worksheet.Cells[row, 3].Value = totalVeganQuantity;
+                            row++;
+                        }
+                        if (totalMedCheeseQuantity > 0)
+                        {
+                            worksheet.Cells[row, 2].Value = "Med Cheesed Up Total";
+                            worksheet.Cells[row, 3].Value = totalMedCheeseQuantity;
+                            row++;
+                        }
+                        if (totalMedCheeseBacon > 0)
+                        {
+                            worksheet.Cells[row, 3].Value = "MedCheeseBacon:";
+                            worksheet.Cells[row, 4].Value = totalMedCheeseBacon;
+                            row++;
+                        }
+                        if (totalMedVeg > 0)
+                        {
+                            worksheet.Cells[row, 2].Value = "MedVeg:";
+                            worksheet.Cells[row, 3].Value = totalMedVeg;
+                            row++;
+                        }
+                        if 
+                        (totalMedSteakQuantity > 0)
+                        {
+                            worksheet.Cells[row, 2].Value = "Med Steak Up Total";
+                            worksheet.Cells[row, 3].Value = totalMedSteakQuantity;
+                            row++;
+
+                        }
+                        worksheet.Cells[row, 2].Value = "Base Size";
+                        worksheet.Cells[row, 3].Value = "Base Total";
                         worksheet.Cells[row, 4].Value = "Cuts Needed";
                         row++;
-                        worksheet.Cells[row, 2].Value = "Total Med Pasties";
-                        worksheet.Cells[row, 3].Value = totalMedPastyQuantity;
-                        string totalMedCutResult = productionHelper.CutRounder(totalMedCutQuantity);
-                        worksheet.Cells[row, 4].Value = totalMedCutResult;
-                        row++;
-                        worksheet.Cells[row, 2].Value = "Total Cocktail Pasties";
-                        worksheet.Cells[row, 3].Value = totalCocktailPastyQuantity;
-                        string totalCocktailCutResult = productionHelper.CutRounder(totalCocktailCutQuantity);
-                        worksheet.Cells[row, 4].Value = totalCocktailCutResult;
-                        row++;
-                        worksheet.Cells[row, 2].Value = "Total Farmers";
-                        worksheet.Cells[row, 3].Value = totalFarmersQuantity;
-                        row++;
-                        worksheet.Cells[row, 2].Value = "Total Large";
-                        worksheet.Cells[row, 3].Value = totalOtherQuantity;
-                        string totalLargeCutResult = productionHelper.CutRounder(totalLargeCutQuantity);
-                        worksheet.Cells[row, 4].Value = totalLargeCutResult;
-                        row++;                       
-
-                        //fontsize 22
-                        //enable gridlines 
-                        //enable header lines
+                        if (totalMedPastyQuantity > 0)
+                        {
+                            worksheet.Cells[row, 2].Value = "Total Med Pasties";
+                            worksheet.Cells[row, 3].Value = totalMedPastyQuantity;
+                            string totalMedCutResult = productionHelper.CutRounder(totalMedCutQuantity);
+                            worksheet.Cells[row, 4].Value = totalMedCutResult;
+                            row++;
+                        }
+                        if(totalCocktailPastyQuantity > 0)
+                        {
+                            worksheet.Cells[row, 2].Value = "Total Cocktail Pasties";
+                            worksheet.Cells[row, 3].Value = totalCocktailPastyQuantity;
+                            string totalCocktailCutResult = productionHelper.CutRounder(totalCocktailCutQuantity);
+                            worksheet.Cells[row, 4].Value = totalCocktailCutResult;
+                            row++;
+                        }
+                        if(totalFarmersQuantity > 0)
+                        {
+                            worksheet.Cells[row, 2].Value = "Total Farmers";
+                            worksheet.Cells[row, 3].Value = totalFarmersQuantity;
+                            row++;
+                        }
+                        if(totalOtherQuantity > 0)
+                        {
+                            worksheet.Cells[row, 2].Value = "Total Large";
+                            worksheet.Cells[row, 3].Value = totalOtherQuantity;
+                            string totalLargeCutResult = productionHelper.CutRounder(totalLargeCutQuantity);
+                            worksheet.Cells[row, 4].Value = totalLargeCutResult;
+                        }
+                        
                     }
 
-
-                    string cellRange = "A1:G90"; // Change this to the range you need
-
-                    // Set the font size for the specified cell range
-                    using (var cells = worksheet.Cells[cellRange])
-                    {
-                        cells.Style.Font.Size = 22; // Change the font size as needed (in points)
-                        worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns(0);
-
-                    }
-
-                    worksheet.PrinterSettings.LeftMargin = 0.25m;
-                    worksheet.PrinterSettings.RightMargin = 0.25m;
-                    worksheet.PrinterSettings.TopMargin = 0.25m;
-                    worksheet.PrinterSettings.BottomMargin = 0.25m;
-
-                    worksheet.PrinterSettings.ShowGridLines = true;
-
-                    worksheet.PrinterSettings.FitToPage = true;
-                    worksheet.PrinterSettings.FitToWidth = 1;
-
-
-
-
-                    //ExcelConversions.AdjustExcelPrint(worksheet);
+                    ExcelConversions.AdjustExcelPrintPortrait(worksheet);
                     package.SaveAs(new FileInfo(outputFilePath));
                 }
 
-                return true; // Method executed successfully
+                return true;
             }
             catch (Exception ex)
             {
-                // Handle exceptions and return false on failure
                 MessageBox.Show(ex.Message);
                 return false;
             }
@@ -451,9 +455,9 @@ namespace Delete_Push_Pull
         public string CutRounder(int totalQuantity)
         {
             int BallsREMOVE = 0;
-            int cutSize = 30; // 1 cut = 30 balls
-            int numberOfCuts = totalQuantity / cutSize; // Calculate the number of cuts
-            int remainingBalls = totalQuantity % cutSize; // Calculate the remaining balls
+            int cutSize = 30;
+            int numberOfCuts = totalQuantity / cutSize; 
+            int remainingBalls = totalQuantity % cutSize; 
             if (numberOfCuts == 0)
             {
                 return $"{remainingBalls} balls";
@@ -521,10 +525,6 @@ namespace Delete_Push_Pull
                 }
             }
         }
-
-
-
-
         private static bool PastyKeywords(string productName)
         {
             string[] keywords = { "pas", "part bake", "cocktail" };

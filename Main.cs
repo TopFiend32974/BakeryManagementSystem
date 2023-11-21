@@ -1,6 +1,7 @@
 ﻿using Delete_Push_Pull.Properties;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,8 +24,6 @@ namespace Delete_Push_Pull
         public static void SetDay()
         {
             selectedDayInstance.SelectedDay = DateTime.Now.DayOfWeek;
-            // You might want to print or log the selected day for debugging purposes
-            //MessageBox.Show($"Selected day set to: {selectedDayInstance.SelectedDay}");
         }
 
         [STAThread]
@@ -33,15 +32,17 @@ namespace Delete_Push_Pull
 
             string GenSheetsDir = (string)Settings.Default["GenSheets"];
             DayOfWeek selectedDay = selectedDayInstance.SelectedDay;
-            //DeleteSection.DeleteFiles(GenSheetsDir);
-
-            ////DataValidation.CheckCSV(GenSheetsDir);
-            //DataValidation.CheckExcel(selectedDay, GenSheetsDir);
+            DeleteSection.DeleteFiles(GenSheetsDir);            
+            if (DataValidation.CheckExcel(selectedDay, GenSheetsDir))
+            {
+                //open folder location
+                Process.Start("explorer.exe", GenSheetsDir);
+            }
+            
+            
             //DataValidation.CheckDelviery(selectedDay);
-            testingGrounds.GenProductsTotal(selectedDay);
-            DataValidation.CheckCSV(GenSheetsDir);
-
-
+            //testingGrounds.GenProductsTotal(selectedDay);
+            //DataValidation.CheckCSV(GenSheetsDir);
         }
         public static void LoadProductionHelper()
         {
@@ -49,7 +50,10 @@ namespace Delete_Push_Pull
             DayOfWeek selectedDay = selectedDayInstance.SelectedDay;
             //DeleteSection.DeleteFiles(GenProductionDir);
 
-            DataValidation.CheckProductionHelper(selectedDay, GenProductionDir);
+            if (DataValidation.CheckProductionHelper(selectedDay, GenProductionDir)){
+                //open file location with file explorer
+                Process.Start("explorer.exe", GenProductionDir);
+            }
         }
         public static void ShowDaySelectionDialog()
         {
@@ -96,8 +100,6 @@ namespace Delete_Push_Pull
 
     internal class DataValidation
     {
-
-
         public static bool CheckExcel(DayOfWeek selectedDay, string GenSheets)
         {
             // Check each method and return false if any method fails
