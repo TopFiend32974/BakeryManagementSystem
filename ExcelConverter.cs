@@ -240,8 +240,12 @@ namespace Delete_Push_Pull
                         worksheet.Cells["B1"].Value = "Prod Name";
                         worksheet.Cells["C1"].Value = "Total";
                         worksheet.Cells["D1"].Value = "Bread Sorted";
-                        worksheet.Cells["E1"].Value = "Sort Remaining Bread";
+                        worksheet.Cells["E1"].Value = "Remaining";
                         worksheet.Cells["F1"].Value = "Completed?";
+                        worksheet.Cells["G1"].Value = "Hot Baskets";
+                        worksheet.Cells["H1"].Value = "Hot Loaves";
+                        worksheet.Cells["I1"].Value = "Cold Baskets";
+                        worksheet.Cells["J1"].Value = "Cold Loaves";
 
 
                         var uniqueProducts = new List<(int ProductId, string ProductName)>();
@@ -279,53 +283,39 @@ namespace Delete_Push_Pull
                             worksheet.Cells[row, 1].Value = ProductId;
                             worksheet.Cells[row, 2].Value = ProductName;
                             worksheet.Cells[row, 3].Value = quantity;
-
-                            // D1 remains null/0
-                            worksheet.Cells[row, 4].Value = null;
-
-                            // E1 is set as an equation for (C1 - D1)
+                            worksheet.Cells[row, 4].Value = 0;
                             worksheet.Cells[row, 5].Formula = $"C{row} - D{row}";
+                            // I1 is hot sort (whole number of baskets)
+                            worksheet.Cells[row, 7].Formula = $"INT(E{row} / 6)";
 
-                            //// F1 can be set as a checkbox (true/false)
-                            //worksheet.Cells[row, 6].Value = "False"; // Set the cell value to "True"
-                            
+                            // I1 is the remaining loaves after hot sort
+                            worksheet.Cells[row, 8].Formula = $"MOD(E{row}, 6)";
 
+                            // J1 is cold sort (whole number of baskets)
+                            worksheet.Cells[row, 9].Formula = $"INT(E{row} / 10)";
 
+                            // K1 is the remaining loaves after cold sort
+                            worksheet.Cells[row, 10].Formula = $"MOD(E{row}, 10)";
                             row++;
-                        }
-
-
-                        
-                        // Determine the last row in the column
+                        }                        
                         int lastRow = worksheet.Cells[worksheet.Dimension.Address].End.Row;                       
-
-
-                        // Add a formula to the Completed? column (Assuming "Total" is in column C and "Bread Sorted" is in column D)
                         worksheet.Cells["F2"].Formula = "IF(C2-D2=0, \"True\", \"False\")";
-
-                        // Apply the formula to the entire column if needed
                         for (int Trow = 2; Trow <= lastRow; Trow++)
                         {
                             worksheet.Cells[Trow, 6].Formula = $"IF(C{Trow}-D{Trow}=0, \"True\", \"False\")";
                         }
-
-
-
                     }
-                    //worksheet.Column(5).Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
+
+                    //worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
+                    AlternateRowColors(worksheet);
+                    AdjustExcelPrint(worksheet);
                     package.Save();
                 }
-
-                // MessageBox.Show($"Bread Sorted for {selectedDay} exported to {outputFilePath}");
-
-                return true; // Method executed successfully
+                return true;
             }
             catch (Exception ex)
             {
-
                 MessageBox.Show(ex.Message);
-                // Handle exceptions and return false on failure
                 return false;
             }
 
@@ -899,25 +889,6 @@ namespace Delete_Push_Pull
             }
         }
 
-
-
-
-
-
-
-
-
-
-
-        public static void ExcelDeleteOriginalFile(string GenSheets)
-        {
-            if (File.Exists(GenSheets))
-            {
-                File.Delete(GenSheets);
-            }
-    
-        }
-
         public static void AdjustExcelPrint(ExcelWorksheet worksheet)
         {
             string cellRange = "A1:AQ200"; // Change this to the range you need
@@ -975,43 +946,40 @@ namespace Delete_Push_Pull
 
 
         }
-
-
-
-        private static void AlternateColumnColors(ExcelWorksheet worksheet)
+        private static void AlternateRowColors(ExcelWorksheet worksheet)
         {
             // Define the two colors you want to alternate between
             var color1 = System.Drawing.Color.LightGray; // Change to your desired color
             var color2 = System.Drawing.Color.White;     // Change to your desired color
 
-            int colIndex = 3; // Starting column index (adjust as needed)
+            int rowIndex = 2; // Starting row index (adjust as needed)
 
-            for (; colIndex <= worksheet.Dimension.End.Column; colIndex++)
+            for (; rowIndex <= worksheet.Dimension.End.Row; rowIndex++)
             {
-                if (colIndex % 2 == 0)
+                if (rowIndex % 2 == 0)
                 {
-                    // Set the border color for even columns
-                    foreach (var cell in worksheet.Cells[2, colIndex, worksheet.Dimension.End.Row, colIndex])
-                    {
-                        cell.Style.Border.Left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
-                        cell.Style.Border.Left.Color.SetColor(color1);
-                        cell.Style.Border.Right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
-                        cell.Style.Border.Right.Color.SetColor(color1);
-                    }
+                    // Set the background color for even rows
+                    worksheet.Cells[rowIndex, 2, rowIndex, worksheet.Dimension.End.Column].Style.Fill.PatternType =
+                        OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    worksheet.Cells[rowIndex, 2, rowIndex, worksheet.Dimension.End.Column].Style.Fill.BackgroundColor.SetColor(color1);
                 }
                 else
                 {
-                    // Set the border color for odd columns
-                    foreach (var cell in worksheet.Cells[2, colIndex, worksheet.Dimension.End.Row, colIndex])
-                    {
-                        cell.Style.Border.Left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
-                        cell.Style.Border.Left.Color.SetColor(color2);
-                        cell.Style.Border.Right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
-                        cell.Style.Border.Right.Color.SetColor(color2);
-                    }
+                    // Set the background color for odd rows
+                    worksheet.Cells[rowIndex, 2, rowIndex, worksheet.Dimension.End.Column].Style.Fill.PatternType =
+                        OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    worksheet.Cells[rowIndex, 2, rowIndex, worksheet.Dimension.End.Column].Style.Fill.BackgroundColor.SetColor(color2);
+                }
+
+                // Add bottom border
+                for (int colIndex = 2; colIndex <= worksheet.Dimension.End.Column; colIndex++)
+                {
+                    worksheet.Cells[rowIndex, colIndex].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
                 }
             }
         }
+
+
 
 
 

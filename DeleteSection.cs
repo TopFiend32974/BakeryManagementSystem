@@ -25,19 +25,27 @@ namespace Delete_Push_Pull
 
         public static void DeleteFiles(string folderPath)
         {
-            // Check if the folder exists
-            if (Directory.Exists(folderPath))
+            try
             {
-                // Check if there are any files in the folder
-                if (IsFolderNotEmpty(folderPath))
+                // Check if the folder exists
+                if (Directory.Exists(folderPath))
                 {
-                    // Delete all files in the folder
-                    foreach (string file in Directory.EnumerateFiles(folderPath))
+                    // Check if there are any files in the folder
+                    if (IsFolderNotEmpty(folderPath))
                     {
-                        File.Delete(file);
+                        // Delete all files in the folder
+                        foreach (string file in Directory.EnumerateFiles(folderPath))
+                        {
+                            File.Delete(file);
+                        }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Close the excel file, bub.");
+            }
+            
         }   
     }
 }
