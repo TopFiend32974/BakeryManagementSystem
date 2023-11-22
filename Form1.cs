@@ -227,47 +227,56 @@ namespace Delete_Push_Pull
 
         private void recoveryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string sourcePath = new DirectoryInfo((string)Settings.Default["BackupDir"]).GetDirectories().OrderByDescending(d => d.LastWriteTimeUtc).First().ToString();
-            string targetPath = (string)Settings.Default["Local"];
-
-            DialogResult dialogResult = MessageBox.Show("Are you sure you want to recover from'" + sourcePath + "' ?", "Warning", MessageBoxButtons.YesNo);
-            if (dialogResult == DialogResult.Yes)
+            string sourcePath = "";
+            try
             {
-                try
+                sourcePath = new DirectoryInfo((string)Settings.Default["BackupDir"]).GetDirectories().OrderByDescending(d => d.LastWriteTimeUtc).First().ToString();
+                string targetPath = (string)Settings.Default["Local"];
+
+                DialogResult dialogResult = MessageBox.Show("Are you sure you want to recover from'" + sourcePath + "' ?", "Warning", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
                 {
-
-                    System.IO.DirectoryInfo di = new DirectoryInfo((string)Settings.Default["Local"]);
-
-                    foreach (FileInfo file in di.GetFiles())
+                    try
                     {
-                        file.Delete();
-                    }
-                    foreach (DirectoryInfo dir in di.GetDirectories())
-                    {
-                        dir.Delete(true);
-                    }
-                    foreach (string dirPath in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
-                    {
-                        Directory.CreateDirectory(dirPath.Replace(sourcePath, targetPath));
-                    }
 
-                    //Copy all the files & Replaces any files with the same name
-                    foreach (string newPath in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
-                    {
-                        File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);
-                    }
+                        System.IO.DirectoryInfo di = new DirectoryInfo((string)Settings.Default["Local"]);
 
-                    lblConsole.Text = "Pull has successfully moved.";
+                        foreach (FileInfo file in di.GetFiles())
+                        {
+                            file.Delete();
+                        }
+                        foreach (DirectoryInfo dir in di.GetDirectories())
+                        {
+                            dir.Delete(true);
+                        }
+                        foreach (string dirPath in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
+                        {
+                            Directory.CreateDirectory(dirPath.Replace(sourcePath, targetPath));
+                        }
+
+                        //Copy all the files & Replaces any files with the same name
+                        foreach (string newPath in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
+                        {
+                            File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);
+                        }
+
+                        lblConsole.Text = "Pull has successfully moved.";
+                    }
+                    catch
+                    {
+                        lblConsole.Text = "Pull has unsuccessfully moved.";
+                    }
                 }
-                catch
+                else if (dialogResult == DialogResult.No)
                 {
-                    lblConsole.Text = "Pull has unsuccessfully moved.";
+                    //do something else
                 }
             }
-            else if (dialogResult == DialogResult.No)
+            catch
             {
-                //do something else
+                MessageBox.Show("No backup folder found");
             }
+            
         }
 
 

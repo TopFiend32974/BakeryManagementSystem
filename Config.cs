@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Delete_Push_Pull.Properties;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,7 +14,7 @@ namespace Delete_Push_Pull
 {
     public partial class Config : Form
     {
-        private const string DataFilePath = "D:\\Bakery_PPD\\Backup\\productTrayData.json"; // Adjust the file path as needed
+        private string DataFilePath = (string)Settings.Default["Local"] + @"\productTrayData.json"; // Adjust the file path as needed
 
         private Dictionary<string, List<float>> productTrayMapping;
         public Config()

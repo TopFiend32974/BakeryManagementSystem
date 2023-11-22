@@ -39,6 +39,16 @@ namespace Delete_Push_Pull
             public List<float> X4StrapsSQ { get; set; }
             public List<float> X5StrapsSM { get; set; }
             public List<float> HighlightList { get; set; }
+            public List<float> Stilton { get; set; }
+            public List<float> chickenbacon { get; set; }
+            public List<float> chickenCurry { get; set; }
+            public List<float> CheeseBacon { get; set; }
+            public List<float> medCheeseBacon { get; set; }
+            public List<float> medVeg { get; set; }
+
+            
+
+
         }
 
 
@@ -333,6 +343,11 @@ namespace Delete_Push_Pull
             {
                 string outputFilePath = GenProd + $@"\ProductionHelper_{selectedDay}.xlsx";
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+                string jsonFilePath = (string)Settings.Default["Local"] + @"\productTrayData.json";
+                string jsonContent = File.ReadAllText(jsonFilePath);
+                ProductLists productLists = JsonConvert.DeserializeObject<ProductLists>(jsonContent);
+
                 using (var package = new ExcelPackage())
                 {                    
                     var worksheet = package.Workbook.Worksheets.Add("PastyHelper");
@@ -349,13 +364,12 @@ namespace Delete_Push_Pull
                             .ToList();
 
                         int row = 2;
-
-                        List<float> Stilton = new List<float> { 373, 338};
-                        List<float> chickenbacon = new List<float> { 336, 369};
-                        List<float> chickenCurry = new List<float> { 339, 366};
-                        List<float> CheeseBacon = new List<float> { 335, 372};
-                        List<float> medCheeseBacon = new List<float> { 388, 372};
-                        List<float> medVeg = new List<float> { 400 };
+                        List<float> Stilton = productLists.Stilton;
+                        List<float> chickenbacon = productLists.chickenbacon;
+                        List<float> chickenCurry = productLists.chickenCurry;
+                        List<float> CheeseBacon = productLists.CheeseBacon;
+                        List<float> medCheeseBacon = productLists.medCheeseBacon;
+                        List<float> medVeg = productLists.medVeg;
                         int totalMedPastyQuantity = 0;
                         int totalCocktailPastyQuantity = 0;
                         int totalFarmersQuantity = 0;

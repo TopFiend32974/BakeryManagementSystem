@@ -27,69 +27,11 @@ namespace Delete_Push_Pull
             lblPull.Text = "Current Dir Selected: " + (string)Settings.Default["Cloud"];
             lblBackup.Text = "Current Dir Selected: " + (string)Settings.Default["BackupDir"];
             lblGenSheets.Text = "Current Dir Selected: " + (string)Settings.Default["GenSheets"];
+            lblProdDir.Text = "Current Dir Selected: " + (string)Settings.Default["ProductionHelpDir"];
             decimal ExcelFontSize = (decimal)Settings.Default["ExcelFontSize"];
             lblFontSizeDisplay.Text = ExcelFontSize.ToString();
-
-
-
-
-            //// To get the DirectorySettings value
-            //StringCollection directorySettings = Properties.Settings.Default.DirectorySettings;
-
-            //// To update the DirectorySettings value
-            //Properties.Settings.Default.DirectorySettings = new StringCollection();
-            //Properties.Settings.Default.DirectorySettings.Add("your_directory_path_here");
-            //Properties.Settings.Default.Save();
-
-            //if (directorySettings != null)
-            //{
-            //    foreach (string directory in directorySettings)
-            //    {
-            //        // Split the directory into title and path
-            //        string[] parts = directory.Split('|');
-
-            //        if (parts.Length == 2)
-            //        {
-            //            string title = parts[0];
-            //            string path = parts[1];
-
-            //            // Display title and path in the list
-            //            DirShow.Items.Add($"{title}: {path}");
-            //        }
-            //        else
-            //        {
-            //            // Invalid format, just add the directory
-            //            DirShow.Items.Add(directory);
-            //        }
-            //    }
-            //}
         }
 
-
-
-        private void listBoxDirectories_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Handle the selection change
-            string selectedDirectory = DirShow.SelectedItem as string;
-
-            // You can do something with the selected directory here
-            MessageBox.Show($"Selected Directory: {selectedDirectory}");
-        }
-
-        private void btnAddDirectory_Click(object sender, EventArgs e)
-        {
-            // Add a new directory to the list and application settings
-            string newDirectory = PromptForDirectory();
-
-            if (!string.IsNullOrEmpty(newDirectory))
-            {
-                DirShow.Items.Add(newDirectory);
-
-                // Save the directory with title and path format
-                //Properties.Settings.Default.DirectorySettings.Add(newDirectory);
-                Properties.Settings.Default.Save();
-            }
-        }
         private string PromptForDirectory()
         {
             using (var folderBrowserDialog = new FolderBrowserDialog())
@@ -148,7 +90,8 @@ namespace Delete_Push_Pull
             {
                 Settings.Default["Local"] = diag.SelectedPath.ToString();
                 Settings.Default.Save();
-                if (!loadAllDAta.ResetData()) {   
+                if (!loadAllDAta.ResetData())
+                {
                     MessageBox.Show("Error: Could not load data");
                 }
                 else

@@ -41,7 +41,6 @@
             btnExcelFontChange = new Button();
             lblFontSizeDisplay = new Label();
             numInputExcelFont = new NumericUpDown();
-            DirShow = new ListBox();
             btnChangeProdDir = new Button();
             lblProdDir = new Label();
             ((System.ComponentModel.ISupportInitialize)numInputExcelFont).BeginInit();
@@ -52,9 +51,9 @@
             lblBackup.AutoSize = true;
             lblBackup.Location = new Point(159, 107);
             lblBackup.Name = "lblBackup";
-            lblBackup.Size = new Size(67, 15);
+            lblBackup.Size = new Size(25, 15);
             lblBackup.TabIndex = 25;
-            lblBackup.Text = "Backup Dir:";
+            lblBackup.Text = "Dir:";
             // 
             // button1
             // 
@@ -168,15 +167,6 @@
             numInputExcelFont.Size = new Size(120, 23);
             numInputExcelFont.TabIndex = 31;
             // 
-            // DirShow
-            // 
-            DirShow.FormattingEnabled = true;
-            DirShow.ItemHeight = 15;
-            DirShow.Location = new Point(105, 279);
-            DirShow.Name = "DirShow";
-            DirShow.Size = new Size(120, 94);
-            DirShow.TabIndex = 32;
-            // 
             // btnChangeProdDir
             // 
             btnChangeProdDir.Location = new Point(25, 190);
@@ -203,7 +193,6 @@
             ClientSize = new Size(800, 450);
             Controls.Add(lblProdDir);
             Controls.Add(btnChangeProdDir);
-            Controls.Add(DirShow);
             Controls.Add(numInputExcelFont);
             Controls.Add(lblFontSizeDisplay);
             Controls.Add(btnExcelFontChange);
@@ -240,7 +229,6 @@
         private Button btnExcelFontChange;
         private Label lblFontSizeDisplay;
         private NumericUpDown numInputExcelFont;
-        private ListBox DirShow;
         private Button btnChangeProdDir;
         private Label lblProdDir;
     }

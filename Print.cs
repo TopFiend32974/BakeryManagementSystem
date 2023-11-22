@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Delete_Push_Pull.Properties;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 //using Microsoft.Office.Interop.Excel;
@@ -94,6 +96,8 @@ namespace Delete_Push_Pull
             }
             else
             {
+                string outputDirectory = (string)Settings.Default["ProductionHelpDir"]; // Change this to your desired directory
+
                 foreach (string sheetName in checkedListBoxSheets.CheckedItems)
                 {
                     Microsoft.Office.Interop.Excel.Worksheet sheet = excelWorkbook.Sheets[sheetName];
@@ -101,8 +105,11 @@ namespace Delete_Push_Pull
                     // Generate a file name based on the sheet name
                     string fileName = $"{selectedFile}_{sheetName}.pdf"; // You can change the file format if needed
 
+                    // Combine the output directory with the file name
+                    string filePath = Path.Combine(outputDirectory, fileName);
+
                     // Print the worksheet and set the file name
-                    sheet.ExportAsFixedFormat(Microsoft.Office.Interop.Excel.XlFixedFormatType.xlTypePDF, fileName);
+                    sheet.ExportAsFixedFormat(Microsoft.Office.Interop.Excel.XlFixedFormatType.xlTypePDF, filePath);
                 }
             }
 
@@ -112,7 +119,9 @@ namespace Delete_Push_Pull
             Marshal.ReleaseComObject(excelApp);
 
             lblSelectedFile.Text = $"Selected File: {selectedFile}";
-            MessageBox.Show("PDF file printed to SheetsDir");
+            MessageBox.Show("PDF file printed to ProductionHelpDir");
+            //open folder path with file explorer 
+            Process.Start("explorer.exe", (string)Settings.Default["ProductionHelpDir"]);
         }
 
 
@@ -120,21 +129,6 @@ namespace Delete_Push_Pull
         {
             return selectedSheets;
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         private void InitializeComponent()
         {
