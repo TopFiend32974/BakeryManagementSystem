@@ -37,8 +37,7 @@ namespace Delete_Push_Pull
             {
                 //open folder location
                 Process.Start("explorer.exe", GenSheetsDir);
-            }
-            
+            }          
             
             //DataValidation.CheckDelviery(selectedDay);
             //testingGrounds.GenProductsTotal(selectedDay);

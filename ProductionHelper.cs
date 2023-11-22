@@ -67,15 +67,31 @@ namespace Delete_Push_Pull
                         List<float> SconeCuts = new List<float> { 260, 265 };
                         List<float> X4StrapsSQ = new List<float> { 5, 73, 113, 134 };
                         List<float> X5StrapsSM = new List<float> { 12, 86, 118, 138 };
+                        List<float> HighlightList = new List<float> { 121, 238, 233, 260, 265, 270, 122, 123, 124, 394, 206, 207};
                         int x4toTrays = 0;
                         int bapsTotal = 0;
                         int FrisbeesTotal = 0;
                         int WhiteBapsTotal = 0;
+                        //cocktail sausage rolls
+                        //both flavours of bridge rolls
+
+
                         foreach (var productTotal in productTotals)
                         {                           
                             Product product = Data.GetInstance().GetProducts().FirstOrDefault(p => p.ProductId == productTotal.Key);                            
                             if (productTotal.Value > 0)
                             {
+                                if (HighlightList.Contains(product.ProductId))
+                                {
+                                    int currentRow = row; // The row you want to highlight
+
+                                    // Set background color for each cell in the row
+                                    for (int col = 1; col <= 4; col++)
+                                    {
+                                        worksheet.Cells[currentRow, col].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                                        worksheet.Cells[currentRow, col].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.Yellow); // You can choose any color
+                                    }
+                                }
                                 worksheet.Cells[row, 1].Value = product.ProductId;
                                 worksheet.Cells[row, 2].Value = product.ProductName;
                                 worksheet.Cells[row, 3].Value = productTotal.Value;
@@ -334,6 +350,7 @@ namespace Delete_Push_Pull
                         int totalLargeCutQuantity = 0;   
                         int totalMedCutQuantity = 0;   
                         int totalCocktailCutQuantity = 0;   
+                        int totalQuicheCutQuantity = 0;   
 
                         foreach (var product in uniqueProducts)
                         {                       
@@ -350,6 +367,11 @@ namespace Delete_Push_Pull
                                         traysRequired = totalQuantity / 30.0;
                                         totalCocktailPastyQuantity += totalQuantity;
                                         totalCocktailCutQuantity += totalQuantity;
+                                    }
+                                    else if (product.ProductName.ToLower().Contains("quiche")){
+                                        traysRequired = totalQuantity;
+                                        totalQuicheCutQuantity += totalQuantity;  
+
                                     }
                                     else if (product.ProductName.ToLower().Contains("med"))
                                     {
@@ -380,6 +402,7 @@ namespace Delete_Push_Pull
                                         if (product.ProductName.ToLower().Contains("farmer"))
                                         {
                                             totalFarmersQuantity += totalQuantity;
+                                            totalSteakQuantity += totalQuantity;
                                         }
                                         else
                                         {                                          
@@ -419,11 +442,33 @@ namespace Delete_Push_Pull
                                             totalLargeCutQuantity += totalQuantity;
                                         }
                                     }
-                                    worksheet.Cells[row, 1].Value = product.ProductId;
-                                    worksheet.Cells[row, 2].Value = product.ProductName;
-                                    worksheet.Cells[row, 3].Value = totalQuantity;
-                                    worksheet.Cells[row, 4].Value = traysRequired;
-                                    row++;
+                                    
+                                    if (product.ProductName.ToLower().Contains("quiche"))
+                                    {
+                                        int currentRow = row; // The row you want to highlight
+
+                                        // Set background color for each cell in the row
+                                        for (int col = 1; col <= 4; col++)
+                                        {
+                                            worksheet.Cells[currentRow, col].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                                            worksheet.Cells[currentRow, col].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.Yellow); // You can choose any color
+                                        }
+                                        worksheet.Cells[row, 1].Value = product.ProductId;
+                                        worksheet.Cells[row, 2].Value = product.ProductName;
+                                        worksheet.Cells[row, 3].Value = totalQuantity;
+                                        worksheet.Cells[row, 4].Value = traysRequired;
+                                        row++;
+
+                                    }
+                                    else
+                                    {
+                                        worksheet.Cells[row, 1].Value = product.ProductId;
+                                        worksheet.Cells[row, 2].Value = product.ProductName;
+                                        worksheet.Cells[row, 3].Value = totalQuantity;
+                                        worksheet.Cells[row, 4].Value = traysRequired;
+                                        row++;
+                                    }
+                                    
                                 }
                             }
                         }
@@ -531,6 +576,12 @@ namespace Delete_Push_Pull
                             worksheet.Cells[row, 3].Value = totalFarmersQuantity;
                             row++;
                         }
+                        if(totalQuicheCutQuantity > 0)
+                        {
+                            worksheet.Cells[row, 2].Value = "Total Quiche:";
+                            worksheet.Cells[row, 3].Value = totalQuicheCutQuantity;
+                            row++;
+                        }
                         if(totalOtherQuantity > 0)
                         {
                             worksheet.Cells[row, 2].Value = "Total Large";
@@ -629,7 +680,7 @@ namespace Delete_Push_Pull
         }
         private static bool PastyKeywords(string productName)
         {
-            string[] keywords = { "pas", "part bake", "cocktail" };
+            string[] keywords = { "pas", "part bake", "cocktail", "quiche" };
             return keywords.Any(keyword => productName.ToLower().Contains(keyword));
         }
 
