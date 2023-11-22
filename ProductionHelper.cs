@@ -1,5 +1,6 @@
 ﻿using Delete_Push_Pull.Properties;
 using Microsoft.Office.Interop.Excel;
+using Newtonsoft.Json;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,23 @@ namespace Delete_Push_Pull
 
             return true;
         }
+        public class ProductLists
+        {
+            public List<float> i24toTray { get; set; }
+            public List<float> i15toTray { get; set; }
+            public List<float> i30toTray { get; set; }
+            public List<float> i5toTray { get; set; }
+            public List<float> X4ToTray { get; set; }
+            public List<float> X6ToTray { get; set; }
+            public List<float> SausageToTray { get; set; }
+            public List<float> XaintsToTray { get; set; }
+            public List<float> Torpedo110GCuts { get; set; }
+            public List<float> SconeCuts { get; set; }
+            public List<float> X4StrapsSQ { get; set; }
+            public List<float> X5StrapsSM { get; set; }
+            public List<float> HighlightList { get; set; }
+        }
+
 
         public static bool GenProductsTotal(DayOfWeek selectedDay, string localDir)
         {
@@ -31,7 +49,7 @@ namespace Delete_Push_Pull
                 string excelFilePath = Path.Combine(localDir, $"ProductionHelper_{selectedDay}.xlsx");
                 List<Order> orders = Data.GetInstance().GetOrders(selectedDay);
                 Dictionary<int, int> productTotals = new Dictionary<int, int>();
-                
+
                 foreach (Product product in Data.GetInstance().GetProducts())
                 {
                     productTotals.Add(product.ProductId, 0);
@@ -48,6 +66,11 @@ namespace Delete_Push_Pull
                 {
                     using (var package = new ExcelPackage(new FileInfo(excelFilePath)))
                     {
+                        string jsonFilePath = (string)Settings.Default["Local"] + @"\productTrayData.json";
+                        string jsonContent = File.ReadAllText(jsonFilePath);
+                        ProductLists productLists = JsonConvert.DeserializeObject<ProductLists>(jsonContent);
+
+
                         int halfDivider = 2;
                         ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("ProductTotals");
                         worksheet.Cells[1, 1].Value = "ID";
@@ -55,19 +78,19 @@ namespace Delete_Push_Pull
                         worksheet.Cells[1, 3].Value = "Total";
                         worksheet.Cells[1, 4].Value = "Trays";
                         int row = 2;
-                        List<float> i24toTray = new List<float> { 185, 172 };
-                        List<float> i15toTray = new List<float> { 168, 179, 199 };
-                        List<float> i30toTray = new List<float> { 187 };
-                        List<float> i5toTray = new List<float> { 215 };
-                        List<float> X4ToTray = new List<float> { 180, 183, 184 };
-                        List<float> X6ToTray = new List<float> { 214 };
-                        List<float> SausageToTray = new List<float> { 380 };
-                        List<float> XaintsToTray = new List<float> { 311 };
-                        List<float> Torpedo110GCuts = new List<float> { 142, 198 };
-                        List<float> SconeCuts = new List<float> { 260, 265 };
-                        List<float> X4StrapsSQ = new List<float> { 5, 73, 113, 134 };
-                        List<float> X5StrapsSM = new List<float> { 12, 86, 118, 138 };
-                        List<float> HighlightList = new List<float> { 121, 238, 233, 260, 265, 270, 122, 123, 124, 394, 206, 207};
+                        List<float> i24toTray = productLists.i24toTray;
+                        List<float> i15toTray = productLists.i15toTray;
+                        List<float> i30toTray = productLists.i30toTray;
+                        List<float> i5toTray = productLists.i5toTray;
+                        List<float> X4ToTray = productLists.X4ToTray;
+                        List<float> X6ToTray = productLists.X6ToTray;
+                        List<float> SausageToTray = productLists.SausageToTray;
+                        List<float> XaintsToTray = productLists.XaintsToTray;
+                        List<float> Torpedo110GCuts = productLists.Torpedo110GCuts;
+                        List<float> SconeCuts = productLists.SconeCuts;
+                        List<float> X4StrapsSQ = productLists.X4StrapsSQ;
+                        List<float> X5StrapsSM = productLists.X5StrapsSM;
+                        List<float> HighlightList = productLists.HighlightList;
                         int x4toTrays = 0;
                         int bapsTotal = 0;
                         int FrisbeesTotal = 0;
@@ -77,8 +100,8 @@ namespace Delete_Push_Pull
 
 
                         foreach (var productTotal in productTotals)
-                        {                           
-                            Product product = Data.GetInstance().GetProducts().FirstOrDefault(p => p.ProductId == productTotal.Key);                            
+                        {
+                            Product product = Data.GetInstance().GetProducts().FirstOrDefault(p => p.ProductId == productTotal.Key);
                             if (productTotal.Value > 0)
                             {
                                 if (HighlightList.Contains(product.ProductId))
@@ -98,7 +121,7 @@ namespace Delete_Push_Pull
 
                                 if (X4ToTray.Contains(product.ProductId))
                                 {
-                                    x4toTrays += productTotal.Value * 4;                                    
+                                    x4toTrays += productTotal.Value * 4;
                                     worksheet.Cells[row, 4].Value = AdjustEquation((productTotal.Value * 4), 24, halfDivider);
                                 }
                                 if (i24toTray.Contains(product.ProductId))
@@ -109,8 +132,9 @@ namespace Delete_Push_Pull
                                     }
                                     bapsTotal += productTotal.Value;
                                     worksheet.Cells[row, 4].Value = AdjustEquation(productTotal.Value, 24, halfDivider);
-                                }                                
-                                else if(i15toTray.Contains(product.ProductId)){
+                                }
+                                else if (i15toTray.Contains(product.ProductId))
+                                {
                                     FrisbeesTotal += productTotal.Value;
                                     worksheet.Cells[row, 4].Value = AdjustEquation(productTotal.Value, 15, halfDivider);
                                 }
@@ -135,15 +159,15 @@ namespace Delete_Push_Pull
                                     worksheet.Cells[row, 4].Value = AdjustEquationScones(productTotal.Value, 37, halfDivider);
                                 }
                                 else if (i5toTray.Contains(product.ProductId))
-                                {                                   
+                                {
                                     worksheet.Cells[row, 4].Value = AdjustEquation(productTotal.Value, 5, halfDivider);
                                 }
                                 else if (XaintsToTray.Contains(product.ProductId))
-                                {                                    
+                                {
                                     worksheet.Cells[row, 4].Value = AdjustEquation(productTotal.Value, 5, halfDivider);
                                 }
                                 else if (X4StrapsSQ.Contains(product.ProductId))
-                                {                          
+                                {
                                     worksheet.Cells[row, 4].Value = AdjustEquationBread(productTotal.Value, 4, halfDivider);
                                 }
                                 else if (X5StrapsSM.Contains(product.ProductId))
@@ -194,8 +218,9 @@ namespace Delete_Push_Pull
             {
                 return false;
             }
-           
+
         }
+
 
         private static string AdjustEquation(int total, int divider, int halfDivider)
         {

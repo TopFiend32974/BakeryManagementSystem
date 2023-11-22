@@ -14,7 +14,7 @@ namespace Delete_Push_Pull
     }
     class MainClass
     {
-        private static internalDaySetter selectedDayInstance = new internalDaySetter();
+        public static internalDaySetter selectedDayInstance = new internalDaySetter();
 
         public static string GetDay()
         {
@@ -39,9 +39,8 @@ namespace Delete_Push_Pull
                 Process.Start("explorer.exe", GenSheetsDir);
             }          
             
-            //DataValidation.CheckDelviery(selectedDay);
-            //testingGrounds.GenProductsTotal(selectedDay);
-            //DataValidation.CheckCSV(GenSheetsDir);
+            
+                       
         }
         public static void LoadProductionHelper()
         {
@@ -118,8 +117,7 @@ namespace Delete_Push_Pull
                 return false;
             if (!DeliveryRoutes.FilterAndOutputPriorityList(selectedDay))
                 return false;
-            //if (!ExcelConversions.OutputCustomerOrdersToExcel(selectedDay, GenSheets))
-            //    return false;
+            
             return true;
         }
 
@@ -127,6 +125,12 @@ namespace Delete_Push_Pull
         public static bool CheckCSV(string GenSheets)
         {
             if (!CSVFiles.OutputProductsToCSV(GenSheets))
+                return false;
+            return true;
+        }
+        public static bool CheckCustomerOutput(string GenSheets, DayOfWeek selectedDay)
+        {
+            if (!ExcelConversions.OutputCustomerOrdersToExcel(selectedDay, GenSheets))
                 return false;
             return true;
         }

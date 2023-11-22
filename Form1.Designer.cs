@@ -40,6 +40,10 @@
             settingsToolStripMenuItem = new ToolStripMenuItem();
             settingsToolStripMenuItem1 = new ToolStripMenuItem();
             recoveryToolStripMenuItem = new ToolStripMenuItem();
+            configProductsToolStripMenuItem = new ToolStripMenuItem();
+            sortIDListToolStripMenuItem = new ToolStripMenuItem();
+            hiddenFeaturesToolStripMenuItem = new ToolStripMenuItem();
+            refreshDataLoaderToolStripMenuItem = new ToolStripMenuItem();
             btnGenGoogleSheets = new Button();
             lblGenLabels = new Button();
             btnOpenGoogleDir = new Button();
@@ -47,7 +51,6 @@
             btnSelectDay = new Button();
             lblDaySelected = new Label();
             btnProductionHelper = new Button();
-            refreshDataLoaderToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -143,7 +146,7 @@
             // 
             // settingsToolStripMenuItem
             // 
-            settingsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { settingsToolStripMenuItem1, recoveryToolStripMenuItem });
+            settingsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { settingsToolStripMenuItem1, recoveryToolStripMenuItem, configProductsToolStripMenuItem });
             settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             settingsToolStripMenuItem.Size = new Size(50, 20);
             settingsToolStripMenuItem.Text = "Menu";
@@ -151,16 +154,44 @@
             // settingsToolStripMenuItem1
             // 
             settingsToolStripMenuItem1.Name = "settingsToolStripMenuItem1";
-            settingsToolStripMenuItem1.Size = new Size(122, 22);
+            settingsToolStripMenuItem1.Size = new Size(180, 22);
             settingsToolStripMenuItem1.Text = "Settings";
             settingsToolStripMenuItem1.Click += settingsToolStripMenuItem1_Click;
             // 
             // recoveryToolStripMenuItem
             // 
             recoveryToolStripMenuItem.Name = "recoveryToolStripMenuItem";
-            recoveryToolStripMenuItem.Size = new Size(122, 22);
+            recoveryToolStripMenuItem.Size = new Size(180, 22);
             recoveryToolStripMenuItem.Text = "Recovery";
             recoveryToolStripMenuItem.Click += recoveryToolStripMenuItem_Click;
+            // 
+            // configProductsToolStripMenuItem
+            // 
+            configProductsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { sortIDListToolStripMenuItem, hiddenFeaturesToolStripMenuItem });
+            configProductsToolStripMenuItem.Name = "configProductsToolStripMenuItem";
+            configProductsToolStripMenuItem.Size = new Size(180, 22);
+            configProductsToolStripMenuItem.Text = "Config Products";
+            // 
+            // sortIDListToolStripMenuItem
+            // 
+            sortIDListToolStripMenuItem.Name = "sortIDListToolStripMenuItem";
+            sortIDListToolStripMenuItem.Size = new Size(180, 22);
+            sortIDListToolStripMenuItem.Text = "Sort ID List";
+            sortIDListToolStripMenuItem.Click += sortIDListToolStripMenuItem_Click;
+            // 
+            // hiddenFeaturesToolStripMenuItem
+            // 
+            hiddenFeaturesToolStripMenuItem.Name = "hiddenFeaturesToolStripMenuItem";
+            hiddenFeaturesToolStripMenuItem.Size = new Size(180, 22);
+            hiddenFeaturesToolStripMenuItem.Text = "Hidden Features";
+            hiddenFeaturesToolStripMenuItem.Click += hiddenFeaturesToolStripMenuItem_Click;
+            // 
+            // refreshDataLoaderToolStripMenuItem
+            // 
+            refreshDataLoaderToolStripMenuItem.Name = "refreshDataLoaderToolStripMenuItem";
+            refreshDataLoaderToolStripMenuItem.Size = new Size(121, 20);
+            refreshDataLoaderToolStripMenuItem.Text = "Refresh DataLoader";
+            refreshDataLoaderToolStripMenuItem.Click += refreshDataLoaderToolStripMenuItem_Click;
             // 
             // btnGenGoogleSheets
             // 
@@ -232,13 +263,6 @@
             btnProductionHelper.UseVisualStyleBackColor = true;
             btnProductionHelper.Click += btnProductionHelper_Click;
             // 
-            // refreshDataLoaderToolStripMenuItem
-            // 
-            refreshDataLoaderToolStripMenuItem.Name = "refreshDataLoaderToolStripMenuItem";
-            refreshDataLoaderToolStripMenuItem.Size = new Size(121, 20);
-            refreshDataLoaderToolStripMenuItem.Text = "Refresh DataLoader";
-            refreshDataLoaderToolStripMenuItem.Click += refreshDataLoaderToolStripMenuItem_Click;
-            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -291,5 +315,8 @@
         public Label lblDaySelected;
         private Button btnProductionHelper;
         private ToolStripMenuItem refreshDataLoaderToolStripMenuItem;
+        private ToolStripMenuItem configProductsToolStripMenuItem;
+        private ToolStripMenuItem sortIDListToolStripMenuItem;
+        private ToolStripMenuItem hiddenFeaturesToolStripMenuItem;
     }
 }

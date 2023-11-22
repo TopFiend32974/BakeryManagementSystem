@@ -521,3 +521,5 @@ C:\Users\jamie\OneDrive - University of Plymouth\Help\Github Bakery V4\Delete Pu
 C:\Users\jamie\OneDrive - University of Plymouth\Help\Github Bakery V4\Delete Push Pull V2.0\obj\Debug\net6.0-windows\Delete Push Pull.pdb
 C:\Users\jamie\OneDrive - University of Plymouth\Help\Github Bakery V4\Delete Push Pull V2.0\obj\Debug\net6.0-windows\Delete Push Pull.genruntimeconfig.cache
 C:\Users\jamie\OneDrive - University of Plymouth\Help\Github Bakery V4\Delete Push Pull V2.0\obj\Debug\net6.0-windows\ref\Delete Push Pull.dll
+C:\Users\jamie\OneDrive - University of Plymouth\Help\Github Bakery V4\Delete Push Pull V2.0\obj\Debug\net6.0-windows\Delete_Push_Pull.Config.resources
+C:\Users\jamie\OneDrive - University of Plymouth\Help\Github Bakery V4\Delete Push Pull V2.0\obj\Debug\net6.0-windows\Delete_Push_Pull.HiddenFeatures.resources

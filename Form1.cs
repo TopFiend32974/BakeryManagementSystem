@@ -312,7 +312,6 @@ namespace Delete_Push_Pull
         private void btnSelectDay_Click(object sender, EventArgs e)
         {
             MainClass.ShowDaySelectionDialog();
-            //return a day value for lbl 
             string selectedDay = MainClass.GetDay();
             lblDaySelected.Text = "Day Selected: " + selectedDay;
         }
@@ -327,6 +326,19 @@ namespace Delete_Push_Pull
             {
                 MessageBox.Show("Data Loaded");
             }
+        }
+
+        private void hiddenFeaturesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            HiddenFeatures HiddenOpen = new HiddenFeatures();
+            HiddenOpen.Show();
+        }
+
+        private void sortIDListToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Config configOpen = new Config();
+            configOpen.Show();
+
         }
     }
 
