@@ -422,6 +422,10 @@ namespace Delete_Push_Pull
                         worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns(0);
                     }
                     AdjustExcelPrint(worksheet);
+                    worksheet.PrinterSettings.FitToPage = true;
+                    worksheet.PrinterSettings.FitToWidth = 1;
+                    //freeze row 1 and column A
+                    worksheet.View.FreezePanes(2, 3);
                     package.Save();
                 }
 
@@ -654,6 +658,10 @@ namespace Delete_Push_Pull
                         worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns(0);
                     }
                     AdjustExcelPrint(worksheet);
+                    worksheet.PrinterSettings.FitToPage = true;
+                    worksheet.PrinterSettings.FitToWidth = 1;
+                    //freeze row 1 and column A
+                    worksheet.View.FreezePanes(2, 3);
                     package.Save();
                     //MessageBox.Show($"Bread Report for {selectedDay} exported to {outputFilePath}");
                 }
@@ -875,6 +883,10 @@ namespace Delete_Push_Pull
                     }
 
                     AdjustExcelPrint(worksheet);
+                    worksheet.PrinterSettings.FitToPage = true;
+                    worksheet.PrinterSettings.FitToWidth = 1;
+                    //freeze row 1 and column A
+                    worksheet.View.FreezePanes(2, 3);
                     package.Save();
                     //MessageBox.Show($"Cake Report for {selectedDay} exported to {outputFilePath}");
                 }

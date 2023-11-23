@@ -57,5 +57,14 @@ namespace Delete_Push_Pull
             }
             MessageBox.Show("Customer Excel Created");
         }
+
+        private void btnListReturnResult_Click(object sender, EventArgs e)
+        {
+            DayOfWeek selectedDay = MainClass.selectedDayInstance.SelectedDay;
+            //testingGrounds.WriteOrganizedProducts(selectedDay);
+
+            List<CombinedProduct> combinedProducts = testingGrounds.GetCombinedProducts(selectedDay);
+            testingGrounds.WriteCombinedProductsToFile(combinedProducts);
+        }
     }
 }

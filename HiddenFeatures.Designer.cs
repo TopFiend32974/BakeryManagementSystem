@@ -32,6 +32,7 @@
             btnTestingClass = new Button();
             btnChkDelivery = new Button();
             btnCustomerExcel = new Button();
+            btnListReturnResult = new Button();
             SuspendLayout();
             // 
             // btnCSV
@@ -74,11 +75,22 @@
             btnCustomerExcel.UseVisualStyleBackColor = true;
             btnCustomerExcel.Click += btnCustomerExcel_Click;
             // 
+            // btnListReturnResult
+            // 
+            btnListReturnResult.Location = new Point(279, 334);
+            btnListReturnResult.Name = "btnListReturnResult";
+            btnListReturnResult.Size = new Size(104, 23);
+            btnListReturnResult.TabIndex = 4;
+            btnListReturnResult.Text = "what am i doing";
+            btnListReturnResult.UseVisualStyleBackColor = true;
+            btnListReturnResult.Click += btnListReturnResult_Click;
+            // 
             // HiddenFeatures
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(btnListReturnResult);
             Controls.Add(btnCustomerExcel);
             Controls.Add(btnChkDelivery);
             Controls.Add(btnTestingClass);
@@ -94,5 +106,6 @@
         private Button btnTestingClass;
         private Button btnChkDelivery;
         private Button btnCustomerExcel;
+        private Button btnListReturnResult;
     }
 }

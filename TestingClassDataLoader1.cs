@@ -11,6 +11,9 @@ using System.Windows.Forms;
 using System.IO.Packaging;
 using Delete_Push_Pull.Properties;
 using System.Drawing.Drawing2D;
+using static Delete_Push_Pull.Product;
+using static Delete_Push_Pull.ProductionHelp;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 
 namespace Delete_Push_Pull
 {
@@ -583,6 +586,14 @@ namespace Delete_Push_Pull
         }
     }
 
+    public class OrganizedProduct
+{
+    public int ProductId { get; set; }
+    public int TotalQuantity { get; set; }
+    public Enum ProductType { get; set; }
+    public int SourceProductId { get; set; }
+}
+
     class testingGrounds
     {
         public static void GenProductsTotal(DayOfWeek selectedDay)
@@ -595,6 +606,72 @@ namespace Delete_Push_Pull
 
             // Clear the text file
             File.WriteAllText(filePath, string.Empty);
+
+            // Get orders from customers for the selected day
+            List<Order> orders = Data.GetInstance().GetOrders(selectedDay);
+
+            // Dictionary to store the total quantity for each product
+            Dictionary<int, int> productTotals = new Dictionary<int, int>();
+            Dictionary<int, Enum> productDetails = new Dictionary<int, Enum>();
+
+            // Iterate through all products and initialize total quantity to 0
+            foreach (Product product in Data.GetInstance().GetProducts())
+            {
+                productTotals.Add(product.ProductId, 0);
+                //productDetails.Add(product.SourceProductId, product.ProductType);
+            }
+
+            // Iterate through orders and update product totals for the selected day
+            foreach (Order order in orders)
+            {
+                foreach (OrderItem orderItem in order.OrderItems)
+                {
+                    int productId = orderItem.Product.ProductId;
+
+                    // Update existing total only for the selected day
+                    productTotals[productId] += orderItem.Quantity;
+                }
+            }
+
+            // Write product totals to the text file for products ordered on the selected day
+            try
+            {
+                using (StreamWriter writer = new StreamWriter(filePath))
+                {
+                    foreach (var productTotal in productTotals)
+                    {                         
+                       
+                        // Get product details using FirstOrDefault
+                        Product product = Data.GetInstance().GetProducts().FirstOrDefault(p => p.ProductId == productTotal.Key);
+                        Product productD = Data.GetInstance().GetProducts().FirstOrDefault(p => p.ProductId == productTotal.Key);
+
+                        // Write product details and total quantity to the file for products ordered on the selected day
+                        writer.WriteLine($"{product.ProductId} {productTotal.Value} {productD.ProductType}{productD.SourceProductId}  ");
+
+                        
+                    }
+                    
+
+                }
+
+                //ProductionHelp.ConvertTextToExcel(filePath, excelFilePath);
+                // Open file in notepad
+                System.Diagnostics.Process.Start("notepad.exe", filePath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error writing to PRODUCTS_TOTAL.txt: {ex.Message}");
+                // or log the error to a log file
+            }
+
+
+
+
+
+        }
+        public static List<OrganizedProduct> GetOrganizedProducts(DayOfWeek selectedDay)
+        {
+            List<OrganizedProduct> organizedProducts = new List<OrganizedProduct>();
 
             // Get orders from customers for the selected day
             List<Order> orders = Data.GetInstance().GetOrders(selectedDay);
@@ -620,37 +697,190 @@ namespace Delete_Push_Pull
                 }
             }
 
-            // Write product totals to the text file for products ordered on the selected day
-            try
+            // Populate the list of organized products
+            foreach (var productTotal in productTotals)
             {
-                using (StreamWriter writer = new StreamWriter(filePath))
+                // Get product details using FirstOrDefault
+                Product product = Data.GetInstance().GetProducts().FirstOrDefault(p => p.ProductId == productTotal.Key);
+
+                // Create an instance of OrganizedProduct and populate its properties
+                OrganizedProduct organizedProduct = new OrganizedProduct
                 {
-                    foreach (var productTotal in productTotals)
-                    {
-                        // Get product details using FirstOrDefault
-                        Product product = Data.GetInstance().GetProducts().FirstOrDefault(p => p.ProductId == productTotal.Key);
+                    ProductId = product.ProductId,
+                    TotalQuantity = productTotal.Value,
+                    ProductType = product.ProductType,
+                    SourceProductId = product.SourceProductId
+                };
 
-                        // Write product details and total quantity to the file for products ordered on the selected day
-                        if (productTotal.Value > 0)
-                        {
-                            writer.WriteLine($"{product.ProductId} {product.ProductName} {productTotal.Value}");
-                        }
-                    }
-                }
+                // Add the organized product to the list
+                organizedProducts.Add(organizedProduct);
+            }
 
-                //ProductionHelp.ConvertTextToExcel(filePath, excelFilePath);
-                // Open file in notepad
-                System.Diagnostics.Process.Start("notepad.exe", filePath);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error writing to PRODUCTS_TOTAL.txt: {ex.Message}");
-                // or log the error to a log file
-            }
+            return organizedProducts;
         }
 
 
 
+        public static void WriteOrganizedProducts(DayOfWeek selectedDay)
+        {
+            // Get the organized products list using the GetOrganizedProducts method
+            List<OrganizedProduct> organizedProducts = GetOrganizedProducts(selectedDay);
+
+            string localDir = (string)Settings.Default["Local"];
+            string filePath = Path.Combine(localDir, "ORGANIZED_PRODUCTS.txt");
+
+            // Clear the text file
+            File.WriteAllText(filePath, string.Empty);
+
+            try
+            {
+                // Write organized products to the text file
+                using (StreamWriter writer = new StreamWriter(filePath))
+                {
+                    foreach (var organizedProduct in organizedProducts)
+                    {
+                        writer.WriteLine($"{organizedProduct.ProductId} {organizedProduct.TotalQuantity} {organizedProduct.ProductType} {organizedProduct.SourceProductId}");
+                    }
+                }
+                //open file in notepad
+                System.Diagnostics.Process.Start("notepad.exe", filePath);
+                Console.WriteLine($"Organized products written to {filePath}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error writing organized products to file: {ex.Message}");
+            }
+        }
+
+
+        public static List<CombinedProduct> GetCombinedProducts(DayOfWeek selectedDay)
+        {
+            List<CombinedProduct> combinedProducts = new List<CombinedProduct>();
+            List<Order> orders = Data.GetInstance().GetOrders(selectedDay);
+            Dictionary<int, int> sourceProductQuantities = new Dictionary<int, int>();
+            foreach (Product product in Data.GetInstance().GetProducts())
+            {
+                if (product.ProductType == ProductTypeEnum.S)
+                {
+                    sourceProductQuantities.Add(product.ProductId, 0);
+                }
+                else if (product.ProductType == ProductTypeEnum.BLANK)
+                {
+                    sourceProductQuantities.Add(product.ProductId, 0);
+                }
+            }
+            int existingKey = 0;
+            int existingValue = 0;
+            int additionalValue = 0;
+            foreach (Order order in orders)
+            {
+                foreach (OrderItem orderItem in order.OrderItems)
+                {
+                    try
+                    {
+                        if (orderItem.Product.ProductType == ProductTypeEnum.S)
+                        {
+                            sourceProductQuantities[orderItem.Product.ProductId] += orderItem.Quantity;
+                        }
+                        else if (orderItem.Product.ProductType == ProductTypeEnum.P)
+                        {
+                            existingKey = orderItem.Product.SourceProductId;
+                            existingValue = sourceProductQuantities[existingKey];                            
+                            sourceProductQuantities[existingKey] += (orderItem.Quantity * orderItem.Product.PackSize);
+                        }
+                        else if (orderItem.Product.ProductType == ProductTypeEnum.BLANK)//&& orderItem.Product.ProductId > 0
+                        {
+
+                            sourceProductQuantities[orderItem.Product.ProductId] += orderItem.Quantity;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error writing to PRODUCTS_TOTAL.txt: {ex.Message}");
+                    }                    
+                }
+            }
+
+            foreach (var kvp in sourceProductQuantities)
+            {
+                int productId = kvp.Key;
+                int quantity = kvp.Value;
+
+                // Fetch the product information from the Data.GetInstance().GetProducts() collection
+                Product product = Data.GetInstance().GetProducts().FirstOrDefault(p => p.ProductId == productId);
+
+                // Check if the product is found
+                if (product != null)
+                {
+                    CombinedProduct combinedProduct = new CombinedProduct
+                    {
+                        ProductId = productId,
+                        ProductName = product.ProductName, // Assuming there's a property called ProductName in your Product class
+                        ProductQuantity = quantity
+                    };
+
+                    combinedProducts.Add(combinedProduct);
+                }
+                else
+                {
+                    // Handle the case where the product is not found
+                    Console.WriteLine($"Product with ID {productId} not found.");
+                }
+            }
+
+            return combinedProducts;
+        }
+
+
+        public static void WriteCombinedProductsToFile(List<CombinedProduct> combinedProducts)
+        {
+            string localDir = (string)Settings.Default["Local"];
+            //string outputPath = "CombinedProductsResult.txt";
+
+            //string filePath = Path.Combine(localDir, outputPath);
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (var package = new ExcelPackage())
+            {
+                // Add a worksheet to the Excel package
+                var worksheet = package.Workbook.Worksheets.Add("ProductQuantities");
+
+                // Add headers to the worksheet
+                worksheet.Cells["A1"].Value = "Product ID";
+                worksheet.Cells["B1"].Value = "Product Name";
+                worksheet.Cells["C1"].Value = "Total Quantity";
+
+                int row = 2;
+                foreach(var product in combinedProducts)    
+                {
+                    if (product.ProductQuantity == 0)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        worksheet.Cells[row, 1].Value = product.ProductId;
+                        worksheet.Cells[row, 2].Value = product.ProductName;
+                        worksheet.Cells[row, 3].Value = product.ProductQuantity;
+                        row++;
+                    }
+                    
+                }
+
+                // Save the Excel package to a file
+                var fileInfo = new FileInfo(localDir + @"\ProductQuantities.xlsx");
+                package.SaveAs(fileInfo);
+
+                MessageBox.Show($"Excel file saved to: {fileInfo.FullName}");
+            }
+        }
+
+
+    }
+    public class CombinedProduct
+    {
+        public int ProductId { get; set; }
+        public int ProductQuantity { get; set; }
+        public string ProductName{ get; set; }
     }
 
 }
