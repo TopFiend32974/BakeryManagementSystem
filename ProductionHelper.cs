@@ -265,7 +265,7 @@ namespace Delete_Push_Pull
             }
             else
             {
-                return $"{trays}T + {remainder}";
+                return $"{trays}T + {remainder} individuals";
             }
         }
         private static string AdjustEquationBread(int total, int divider, int halfDivider)
@@ -279,7 +279,7 @@ namespace Delete_Push_Pull
             {
                 trays += 1;
                 remainder = divider - remainder;
-                return $"{trays} Straps - {remainder}";
+                return $"{trays} Straps - {remainder} individuals";
             }
             else if (trays == 0)
             {
@@ -291,7 +291,7 @@ namespace Delete_Push_Pull
             }
             else
             {
-                return $"{trays} Straps + {remainder}";
+                return $"{trays} Straps + {remainder} individuals";
             }
         }
         private static string AdjustEquationScones(int total, int divider, int halfDivider)
@@ -809,6 +809,10 @@ namespace Delete_Push_Pull
 
         public static bool GenProductsTotalV2(List<CombinedProducts> combinedProducts)
         {
+            //open new pop up form asking the user if they want to generate this method into file path one, or file path two.
+            //if they select file path one, then it will generate the file into the file path one, if they select file path two, then it will generate the file into file path two.
+            //if they select cancel, then it will not generate the file.
+
             string GenDir = (string)Settings.Default["ProductionHelpDir"];
             DayOfWeek selectedDay = MainClass.selectedDayInstance.SelectedDay;
             string excelFilePath = Path.Combine(GenDir, $"ProductionHelper_{selectedDay}.xlsx");
