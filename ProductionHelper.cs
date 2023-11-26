@@ -964,7 +964,7 @@ namespace Delete_Push_Pull
                     if (bapsTotal + x4toTrays > 0)
                     {
                         worksheet.Cells[row, 1].Value = "Total Baps";
-                        worksheet.Cells[row, 2].Value = bapsTotal + x4toTrays;
+                        worksheet.Cells[row, 2].Value = bapsTotal + (x4toTrays * 4);
                         worksheet.Cells[row, 3].Value = Math.Ceiling(((double)bapsTotal + x4toTrays) / 24);
                         row++;
                     }
@@ -978,8 +978,8 @@ namespace Delete_Push_Pull
                     if (WhiteBapsTotal + x4toTrays > 0)
                     {
                         worksheet.Cells[row, 1].Value = "Total White Bap";
-                        worksheet.Cells[row, 2].Value = WhiteBapsTotal + x4toTrays;
-                        worksheet.Cells[row, 3].Value = Math.Ceiling((double)(WhiteBapsTotal + x4toTrays) / 24.0);
+                        worksheet.Cells[row, 2].Value = WhiteBapsTotal + (x4toTrays * 4);
+                        worksheet.Cells[row, 3].Value = Math.Ceiling((double)(WhiteBapsTotal + (x4toTrays * 4)) / 24.0);
 
                     }
                     ExcelConversions.AdjustExcelPrintPortrait(worksheet);
