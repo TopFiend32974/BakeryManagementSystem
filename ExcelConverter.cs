@@ -19,8 +19,6 @@ namespace Delete_Push_Pull
 
             try
             {
-                //960343807709-aa1nchn2na999j7106gj2s37p8ran7up.apps.googleusercontent.com
-
                 // Specify the output Excel file path
                 string outputFilePath = GenSheets + $@"\MyMatrix_{selectedDay}.xlsx";
                 //ExcelDeleteOriginalFile(outputFilePath);
@@ -227,11 +225,13 @@ namespace Delete_Push_Pull
                 string outputFilePath = GenSheets + $@"\MyMatrix_{selectedDay}.xlsx";
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
+
                 using (var package = new ExcelPackage(new FileInfo(outputFilePath)))
                 {
                     var worksheet = package.Workbook.Worksheets.Add("Bread Sorted");
 
                     var ordersByDay = Data.GetInstance().GetOrders(selectedDay);
+                    worksheet.View.FreezePanes(2, 3);
 
                     if (ordersByDay.Count > 0)
                     {
@@ -321,13 +321,6 @@ namespace Delete_Push_Pull
 
         }
 
-
-        //-------------------//
-
-
-
-
-
         public static bool GeneratePartBakePastyCocktailReport(DayOfWeek selectedDay, string GenSheets)
         {
 
@@ -349,12 +342,6 @@ namespace Delete_Push_Pull
                         // Create a header row
                         worksheet.Cells["A1"].Value = "ID";
                         worksheet.Cells["B1"].Value = "Prod Name";
-
-                        //var uniqueCustomers = ordersByDay.SelectMany(o => o.OrderItems.Select(oi => oi.Order.Customer))
-                        //    .Distinct()
-                        //    .OrderBy(c => c.CustomerID)
-                        //    .ToList();
-
 
                         // Filter unique customers who have ordered pasties (part bake pasty cocktail products)
                         var uniqueCustomers = ordersByDay
@@ -443,8 +430,6 @@ namespace Delete_Push_Pull
 
 
         }
-
-
         // Helper function to check if a product is "part bake," "pasty," or "cocktail"
         private static bool IsPartBakePastyCocktailProduct(string productName)
         {
@@ -473,11 +458,6 @@ namespace Delete_Push_Pull
                         // Create a header row
                         worksheet.Cells["A1"].Value = "ID";
                         worksheet.Cells["B1"].Value = "Prod Name";
-
-                        //var uniqueCustomers = ordersByDay.SelectMany(o => o.OrderItems.Select(oi => oi.Order.Customer))
-                        //    .Distinct()
-                        //    .OrderBy(c => c.CustomerID)
-                        //    .ToList();
 
                         var uniqueCustomers = ordersByDay
                             .SelectMany(o => o.OrderItems
@@ -587,11 +567,6 @@ namespace Delete_Push_Pull
                         // Create a header row
                         worksheet.Cells["A1"].Value = "ID";
                         worksheet.Cells["B1"].Value = "Prod Name";
-
-                        //var uniqueCustomers = ordersByDay.SelectMany(o => o.OrderItems.Select(oi => oi.Order.Customer))
-                        //    .Distinct()
-                        //    .OrderBy(c => c.CustomerID)
-                        //    .ToList();
 
                         var uniqueCustomers = ordersByDay
                             .SelectMany(o => o.OrderItems
@@ -704,11 +679,6 @@ namespace Delete_Push_Pull
                         // Create a header row
                         worksheet.Cells["A1"].Value = "ID";
                         worksheet.Cells["B1"].Value = "Prod Name";
-
-                        //var uniqueCustomers = ordersByDay.SelectMany(o => o.OrderItems.Select(oi => oi.Order.Customer))
-                        //    .Distinct()
-                        //    .OrderBy(c => c.CustomerID)
-                        //    .ToList();
 
                         var uniqueCustomers = ordersByDay
                             .SelectMany(o => o.OrderItems
